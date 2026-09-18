@@ -8,7 +8,7 @@ export const EDITED_DIALOGUES: Record<string, DialogueLine[]> = {
   item_camera: [
     { think: true, text: 'Коробка с фотоаппаратом. Canon, тот самый' },
     { think: true, text: 'Только нахуя?' },
-    { who: 'anastasiia', text: 'Это же... как он узнал?' },
+    { who: 'anastasiia', text: 'Мдаааа чел, ну ты как всегда...' },
   ],
   item_vinyl: [
     { think: true, text: 'Виниловый проигрыватель. Тяжёлый.' },
