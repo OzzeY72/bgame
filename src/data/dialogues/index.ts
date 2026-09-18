@@ -31,8 +31,9 @@ export const HANDMADE_DIALOGUES: Record<string, Dialogue> = {
     const n = state.gifts.length;
     if (n > 0) {
       return [
-        { who: 'rabbit', text: `Собрали ${n} из ${totalGifts()}. Остальные где-то там — курьер разнёс куда попало.` },
-        { who: 'rabbit', text: 'Когда соберёте все — приносите сюда, откроем вместе.' },
+        { who: 'rabbit', text: `Собрали ${n} из ${totalGifts()}. Остальные где-то там - курьер разнёс куда попало.` },
+        { who: 'rabbit', text: 'Когда соберёте все - приносите сюда, откроем вместе.' },
+        { who: 'rabbit', text: 'Кстати, не забудьте покормить Фрею' },
       ];
     }
     return [
@@ -40,7 +41,7 @@ export const HANDMADE_DIALOGUES: Record<string, Dialogue> = {
       { who: 'rabbit', text: 'На ваше имя пришло несколько посылок. Две здесь, на полках. Остальные курьер разнёс куда попало.' },
       { who: 'anastasiia', text: 'На моё имя? От кого?' },
       { who: 'rabbit', text: 'Отправитель просил не говорить. Но он очень старался.' },
-      { who: 'rabbit', text: 'Соберите все — и приносите сюда. Открывать лучше вместе.' },
+      { who: 'rabbit', text: 'Соберите все - и приносите сюда. Открывать лучше вместе.' },
       { who: 'rabbit', text: 'Кстати, не забудьте покормить Фрею' },
     ];
   },
