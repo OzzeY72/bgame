@@ -47,4 +47,5 @@ export const BASE_LEGEND: Record<string, string> = {
   '*': 'grass_flowers', // газон с мелкими цветочками (вариант травы)
   y: 'flowers2', // второй куст цветов
   h: 'bush2', // второй куст
+  K: 'sakura_trunk', // сакура (ствол; крона sakura_top сверху)
 };

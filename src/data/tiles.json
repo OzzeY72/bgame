@@ -243,6 +243,17 @@
       "name": "bush2",
       "solid": true,
       "color": "#356b2e"
+    },
+    {
+      "name": "sakura_trunk",
+      "solid": true,
+      "color": "#7a4a3a",
+      "top": "sakura_top"
+    },
+    {
+      "name": "sakura_top",
+      "solid": false,
+      "color": "#f2a7c3"
     }
   ]
 }

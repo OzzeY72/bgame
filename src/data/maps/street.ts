@@ -28,9 +28,9 @@ export const street: MapDef = {
     '..........................', // 14
   ],
   objects: [
-    'y             y           ', // 0
+    'y  T          y       T   ', // 0
     '        f         y       ', // 1
-    ' T  y T   b y  T    T   T ', // 2
+    ' K  y K   b y  K    K   K ', // 2
     'FFFFFFFFFFFFFFFFFFFFFFFFFF', // 3
     '                          ', // 4
     '     L           L        ', // 5
@@ -39,9 +39,9 @@ export const street: MapDef = {
     '                          ', // 8
     '                          ', // 9
     '                          ', // 10
-    '    h      b        b     ', // 11
+    '   K      hbh  K   K   K  ', // 11
     ' y      y                 ', // 12
-    '       T          T     f ', // 13
+    '       K                f ', // 13
     '   y            y         ', // 14
   ],
   spawns: {
@@ -62,5 +62,6 @@ export const street: MapDef = {
   ],
   triggers: [
     { id: 'sky', x: 8, y: 4, w: 2, h: 6, cutscene: 'sky_alarm', if: ['!minigame:shahed:won'] },
+    { id: 'lamb_trigger', x: 14, y: 4, w: 3, h: 6, cutscene: 'lamb_run', if: ['!lamb_run_done'] },
   ],
 };

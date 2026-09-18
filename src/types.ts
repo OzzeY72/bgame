@@ -87,6 +87,12 @@ export interface MapDef {
   music?: string;
   /** фоновый эффект локации (ключ из SFX_NAMES): играет случайными паузами, пока игрок на карте */
   ambientSfx?: string;
+  /** зацикленные фоновые эмбиент-звуки локации (список ключей из SFX_NAMES, например ['bird-ambience', 'wind']) */
+  ambient?: string[];
+  /** локация снаружи */
+  outdoor?: boolean;
+  /** падающая листва (placeholder, потом сакура) */
+  leaves?: boolean;
   /** цвет фона за картой */
   bg?: number;
 }

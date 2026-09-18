@@ -211,6 +211,61 @@ class AudioSystem {
     return keys;
   }
 
+  // ---------------------------------------------------------------- фоновые эмбиент-звуки
+
+  private ambientSounds = new Map<string, Phaser.Sound.WebAudioSound | Phaser.Sound.BaseSound>();
+
+  /**
+   * Запустить зацикленные фоновые эмбиент-звуки (например, ['bird-ambience', 'wind', 'cicadas']).
+   * Звуки, которых нет в списке keys, останавливаются.
+   */
+  playAmbient(keys: string[] = [], opts: { volume?: number } = {}): void {
+    if (!this.manager) return;
+
+    const m = this.muted ? 0 : 1;
+    const baseVol = (opts.volume ?? 0.35) * this.volumes.sfx * m;
+    const targetKeys = new Set(keys);
+
+    // 1. Остановить звуки, которых нет в targetKeys
+    for (const [key, snd] of this.ambientSounds) {
+      if (!targetKeys.has(key)) {
+        snd.stop();
+        snd.destroy();
+        this.ambientSounds.delete(key);
+      }
+    }
+
+    // 2. Запустить новые звуки
+    for (const key of keys) {
+      if (this.ambientSounds.has(key)) {
+        const snd = this.ambientSounds.get(key);
+        if (snd && 'setVolume' in snd) {
+          (snd as Phaser.Sound.WebAudioSound).setVolume(baseVol);
+        }
+        continue;
+      }
+
+      const cache = (this.manager as Phaser.Sound.WebAudioSoundManager).game.cache.audio;
+      const sfxKey = `sfx_${key}`;
+      const fullKey = cache.exists(sfxKey) ? sfxKey : cache.exists(key) ? key : null;
+
+      if (fullKey) {
+        const snd = this.manager.add(fullKey, { loop: true, volume: baseVol });
+        snd.play();
+        this.ambientSounds.set(key, snd);
+      }
+    }
+  }
+
+  /** Остановить все зацикленные эмбиент-звуки. */
+  stopAmbient(): void {
+    for (const [, snd] of this.ambientSounds) {
+      snd.stop();
+      snd.destroy();
+    }
+    this.ambientSounds.clear();
+  }
+
   // ---------------------------------------------------------------- громкость
 
   toggleMute(): boolean {
@@ -235,6 +290,11 @@ class AudioSystem {
     // Не трогаем sound.volume пока идёт fade-in tween — иначе громкость прыгает на 100%
     if (c?.sound && !(c.fadeUntil && performance.now() < c.fadeUntil)) {
       c.sound.setVolume((c.def.volume ?? 1) * this.volumes.music * m);
+    }
+    for (const [, snd] of this.ambientSounds) {
+      if ('setVolume' in snd) {
+        (snd as Phaser.Sound.WebAudioSound).setVolume(0.35 * this.volumes.sfx * m);
+      }
     }
   }
 

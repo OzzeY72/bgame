@@ -39,10 +39,10 @@ export const yard: MapDef = {
     '                          ', // 8
     '                          ', // 9
     '                          ', // 10
-    '  T     b      T      f   ', // 11
+    '   K    b      K      f   ', // 11
     '      f   f               ', // 12
-    '               f  T  f    ', // 13
-    '  f          T         b  ', // 14
+    '        T      f  T  f    ', // 13
+    '  f         K          b  ', // 14
   ],
   spawns: {
     start: { x: 5, y: 5, dir: 'down' },

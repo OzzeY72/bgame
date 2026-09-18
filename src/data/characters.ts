@@ -29,6 +29,7 @@ export const CHARACTERS: Record<string, CharacterDef> = {
   me: { id: 'me', name: 'БЕДОЛАГА', sprite: 'me', portrait: 'me_portrait', frame: CHAR_FRAME, color: 0x8ab4f8, voice: { clips: 'me', rate: 0.8 } },
   /** монстр из канализации (ритм-битва); на карте стоит как NPC, в мини-игре — тело + процедурные щупальца */
   monster: { id: 'monster', name: 'Низкобюджетный монстр', sprite: 'monster', portrait: 'monster_portrait', frame: MONSTER_FRAME, color: 0x5a3a7a, placeholder: 'monster' },
+  lamb: { id: 'lamb', name: 'Овечка', sprite: 'lamb', portrait: 'lamb_portrait', frame: SMALL_FRAME, color: 0xffe4e1, voice: { clips: 'anastasiia', rate: 1.4 } },
 };
 
 /** Персонаж, которым управляет игрок. */

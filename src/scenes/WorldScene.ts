@@ -13,6 +13,7 @@ import { Player } from '../entities/Player';
 import { NPC } from '../entities/NPC';
 import { buildMap, type BuiltMap } from '../systems/MapLoader';
 import { addWater } from '../systems/Water';
+import { addFallingLeaves } from '../systems/FallingLeaves';
 import { dialogue } from '../systems/DialogueManager';
 import { CutsceneRunner, type CutsceneContext } from '../systems/CutsceneRunner';
 import { getMap } from '../data/maps';
@@ -99,6 +100,7 @@ export class WorldScene extends Phaser.Scene implements CutsceneContext {
 
     this.built = buildMap(this, this.def);
     addWater(this, this.built);
+    if (this.def.leaves) addFallingLeaves(this, this.built);
     this.physics.world.setBounds(0, 0, this.built.widthPx, this.built.heightPx);
 
     // --- игрок ---
@@ -138,6 +140,7 @@ export class WorldScene extends Phaser.Scene implements CutsceneContext {
       bus.off('input:unlock', onUnlock);
       this.setFocus(null);
       this.ambientTimer?.remove();
+      audio.stopAmbient();
     });
 
     this.runner = new CutsceneRunner(this);
@@ -150,8 +153,14 @@ export class WorldScene extends Phaser.Scene implements CutsceneContext {
     void this.enterMap();
   }
 
-  /** Фоновый эффект локации (`def.ambientSfx`): играет со случайными паузами, пока сцена жива. */
+  /** Фоновый эффект локации: зацикленные эмбиент-звуки (`def.ambient`) и разовые sfx (`def.ambientSfx`). */
   private startAmbient(): void {
+    if (this.def.ambient && this.def.ambient.length > 0) {
+      audio.playAmbient(this.def.ambient);
+    } else {
+      audio.stopAmbient();
+    }
+
     const name = this.def.ambientSfx;
     if (!name) return;
     const tick = () => {

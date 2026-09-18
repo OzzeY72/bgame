@@ -369,6 +369,26 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
       } },
     ],
   },
+
+  /** улица: появление овечки (lamb) из-за кустов */
+  lamb_run: {
+    id: 'lamb_run',
+    once: true,
+    script: [
+      { sfx: 'alert' },
+      { actor: 'player', emote: '?' },
+      { spawn: { id: 'lamb', sprite: 'lamb', at: [11, 11], dir: 'down' } },
+      { sfx: 'notify' },
+      { actor: 'lamb', emote: '!' },
+      { say: 'lamb', text: 'Ме-е-е!' },
+      { actor: 'player', emote: '!' },
+      { say: 'anastasiia', text: 'Ой! Это козочка?!' },
+      { actor: 'lamb', face: 'right' },
+      { actor: 'lamb', path: [[18, 11], [25, 11]], speed: 150 },
+      { remove: 'lamb' },
+      { setFlag: 'lamb_run_done' },
+    ],
+  },
 };
 
 export const CUTSCENES: Record<string, Cutscene> = { ...HANDMADE_CUTSCENES, ...EDITED_CUTSCENES };

@@ -27,7 +27,7 @@ export const SFX_NAMES = [
   'blip', 'select', 'bark', 'pickup', 'gift', 'open', 'locked', 'tick',
   'hit_perfect', 'hit_good', 'hit_ok', 'miss', 'roar',
   'shot', 'explode', 'clank', 'alert', 'wrong', 'drone', 'win', 'lose', 'brush', 'whoosh', 'splash',
-  'firework', 'notify', 'drip',
+  'firework', 'notify', 'drip', 'wind', 'bird-ambience', 'cicadas',
 ] as const;
 
 /** для большинства эффектов файл .ogg; здесь — исключения с другим расширением */

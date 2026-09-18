@@ -28,10 +28,10 @@ export const post_outside: MapDef = {
     '..........................', // 14
   ],
   objects: [
-    '                          ', // 0
+    'hhhhhhhhhh          hhhhhh', // 0
     '                          ', // 1
-    '  T    b                  ', // 2
-    '                       T  ', // 3
+    ' K  K  K                  ', // 2
+    '                     K T  ', // 3
     '                          ', // 4
     '     L                L   ', // 5
     '                          ', // 6
@@ -39,9 +39,9 @@ export const post_outside: MapDef = {
     '                          ', // 8
     '                          ', // 9
     '                          ', // 10
-    '   b       B] h     b     ', // 11
+    '   b       B] h   K       ', // 11
     '                          ', // 12
-    ' y     T          T       ', // 13
+    ' y     T  K    K     K    ', // 13
     '                          ', // 14
   ],
   spawns: {
