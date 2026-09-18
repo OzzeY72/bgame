@@ -14,7 +14,7 @@ import { EDITED_DIALOGUES } from './edited';
 export const HANDMADE_DIALOGUES: Record<string, Dialogue> = {
   /** Первый разговор с Фреей; повторные — катсцена freya_talk (мини-игра feed). */
   freya_yard: [
-    { who: 'freya', text: 'Гав! Гав-гав!', sfx: 'bark' },
+    { who: 'freya', text: 'Гав! Гав-гав!' },
     { who: 'anastasiia', text: 'Ты чего такая довольная?' },
     { who: 'freya', text: '...' },
     { think: true, text: 'Кажется, она что-то знает. Пойду направо, посмотрю.' },

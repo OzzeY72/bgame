@@ -1,26 +1,26 @@
 import Phaser from 'phaser';
-import type { Dir, MapDef, MapItem, MapTrigger, MinigameResult } from '../types';
 import { TILE } from '../config';
+import { audio } from '../core/Audio';
+import { DIR_VEC, opposite } from '../core/Directions';
 import { bus } from '../core/EventBus';
-import { setupCamera } from '../core/Render';
 import { gameState, type PackedGift } from '../core/GameState';
 import { GameInput } from '../core/Input';
-import { resetInputLock, lockInput, unlockInput } from '../core/InputLock';
-import { DIR_VEC, opposite } from '../core/Directions';
-import { audio } from '../core/Audio';
+import { lockInput, resetInputLock, unlockInput } from '../core/InputLock';
+import { setupCamera } from '../core/Render';
+import { CHARACTERS, PLAYER_ID } from '../data/characters';
+import { CUTSCENES, getCutscene } from '../data/cutscenes';
+import { defaultGiftLines, itemName, itemTexture, LOCKED_GIFT_LINES, totalGifts } from '../data/gifts';
+import { getMap } from '../data/maps';
 import { Actor } from '../entities/Actor';
-import { Player } from '../entities/Player';
 import { NPC } from '../entities/NPC';
+import { Player } from '../entities/Player';
+import { MINIGAMES, runMinigame } from '../minigames';
+import { CutsceneRunner, type CutsceneContext } from '../systems/CutsceneRunner';
+import { dialogue } from '../systems/DialogueManager';
+import { addFallingLeaves } from '../systems/FallingLeaves';
 import { buildMap, type BuiltMap } from '../systems/MapLoader';
 import { addWater } from '../systems/Water';
-import { addFallingLeaves } from '../systems/FallingLeaves';
-import { dialogue } from '../systems/DialogueManager';
-import { CutsceneRunner, type CutsceneContext } from '../systems/CutsceneRunner';
-import { getMap } from '../data/maps';
-import { getCutscene, CUTSCENES } from '../data/cutscenes';
-import { CHARACTERS, PLAYER_ID } from '../data/characters';
-import { defaultGiftLines, itemName, itemTexture, LOCKED_GIFT_LINES, totalGifts } from '../data/gifts';
-import { runMinigame, MINIGAMES } from '../minigames';
+import type { Dir, MapDef, MapItem, MapTrigger, MinigameResult } from '../types';
 
 interface WorldData {
   map: string;
@@ -121,6 +121,18 @@ export class WorldScene extends Phaser.Scene implements CutsceneContext {
     cam.setRoundPixels(true);
     cam.startFollow(this.player, true, 1, 1);
     cam.centerOn(this.player.x, this.player.y);
+
+    // --- розовый фильтр на уличных локациях ---
+    if (this.def.outdoor) {
+      const fx = cam.filters.external.addColorMatrix();
+      // Лёгкий сдвиг: чуть добавляем красного/розового, чуть убавляем зелёного и синего
+      fx.colorMatrix.set([
+        1.06, 0.04, 0.04, 0, 0,   // red
+        0.02, 0.97, 0.00, 0, 0,   // green
+        0.02, 0.00, 0.98, 0, 0,   // blue
+        0,    0,    0,    1, 0,   // alpha
+      ]);
+    }
 
     // --- ввод и блокировки ---
     this.keys = new GameInput(this);

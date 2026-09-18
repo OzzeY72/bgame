@@ -60,4 +60,6 @@ export const yard: MapDef = {
     { id: 'feed_gift', sprite: 'prop_gift', x: 10, y: 5, gift: { item: 'macbook', unlock: 'minigame:feed:won' }, dialogue: 'item_macbook', if: ['minigame:feed:won'] },
   ],
   onEnter: ['intro'],
+  outdoor: true,
+  leaves: true,
 };

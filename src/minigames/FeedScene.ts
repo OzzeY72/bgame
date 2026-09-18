@@ -113,7 +113,7 @@ export class FeedScene extends MinigameScene {
     this.hudMiss = this.add.text(GAME_WIDTH - 8, 6, `Ошибки: 0/${FEED.maxMiss}`, hudStyle(11)).setOrigin(1, 0).setDepth(60);
     this.hudMsg = this.add.text(GAME_WIDTH / 2, TRAY.y - 44, '', hudStyle(10, '#f28b8b')).setOrigin(0.5).setDepth(60);
 
-    audio.sfx('bark');
+    audio.voice('freya');
     void this.banner('Фрея чего-то хочет. Смотри в облачко и подавай: 1/2/3, A/S/D или клик', 2600, 11).then(() => {
       if (this.phase === 'intro') this.nextAsk();
     });
@@ -305,7 +305,7 @@ export class FeedScene extends MinigameScene {
     this.popup(FREYA.x + 30, FREYA.y - 60, `+${pts}${fast ? ' быстро!' : ''}`, '#ffe36e');
     this.popup(FREYA.x - 16, FREYA.y - 72, ITEMS[this.wanted].react, '#ffffff', 12);
     audio.sfx('pickup', { volume: 0.6, rate: 1.2 });
-    audio.sfx('bark', { volume: 0.7, rate: Phaser.Math.FloatBetween(1.05, 1.3) });
+    audio.voice('freya', { volume: 0.7, rate: Phaser.Math.FloatBetween(1.05, 1.3) });
     this.tweens.add({ targets: this.freya, y: FREYA.y - 8, duration: 110, yoyo: true, ease: 'Quad.easeOut' });
     this.after(FEED.gapSec);
   }
@@ -354,7 +354,7 @@ export class FeedScene extends MinigameScene {
     const won = !quit && this.misses <= FEED.maxMiss;
     if (won) {
       this.tweens.add({ targets: this.freya, y: FREYA.y - 10, duration: 140, yoyo: true, repeat: 2, ease: 'Quad.easeOut' });
-      audio.sfx('bark', { rate: 1.2 });
+      audio.voice('freya', { rate: 1.2 });
     }
     const lines = [
       `Очки: ${this.score}`,

@@ -53,4 +53,6 @@ export const post_outside: MapDef = {
     { x: 14, y: 3, w: 2, h: 1, to: 'post_inside', spawn: 'door' },
   ],
   onEnter: ['finale'],
+  outdoor: true,
+  leaves: true,
 };

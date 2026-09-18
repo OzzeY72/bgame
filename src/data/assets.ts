@@ -24,17 +24,17 @@ export interface AssetDef {
 
 /** Звуковые эффекты, для которых можно положить файл assets/sfx/<name>.ogg (иначе — синтез, см. core/Synth.ts). */
 export const SFX_NAMES = [
-  'blip', 'select', 'bark', 'pickup', 'gift', 'open', 'locked', 'tick',
+  'blip', 'select', 'pickup', 'gift', 'open', 'locked', 'tick',
   'hit_perfect', 'hit_good', 'hit_ok', 'miss', 'roar',
   'shot', 'explode', 'clank', 'alert', 'wrong', 'drone', 'win', 'lose', 'brush', 'whoosh', 'splash',
-  'firework', 'notify', 'drip', 'wind', 'bird-ambience', 'cicadas',
+  'firework', 'notify', 'drip', 'wind',
 ] as const;
 
 /** для большинства эффектов файл .ogg; здесь — исключения с другим расширением */
 const SFX_EXT: Partial<Record<(typeof SFX_NAMES)[number], string>> = { drip: 'mp3' };
 
 /** сколько файлов голоса на каждого персонажа: assets/voice/<clips>_1.ogg … _<N>.ogg */
-export const VOICE_CLIP_COUNTS: Record<string, number> = { anastasiia: 4, me: 3 };
+export const VOICE_CLIP_COUNTS: Record<string, number> = { anastasiia: 4, me: 3, freya: 3 };
 
 /** ключ загруженного клипа голоса */
 export const voiceKey = (clips: string, n: number): string => `voice_${clips}_${n}`;

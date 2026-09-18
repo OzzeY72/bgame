@@ -78,6 +78,7 @@ pixel:
     me: { frame: [48, 96], char_height: 80 }
     freya: { frame: [96, 64], char_height: 54 } # = DOG_FRAME: рост 2/3 Настасьи, в профиль шире, чем выше
     rabbit: { frame: [96, 96], char_height: 66 }
+    lamb:   { frame: [96, 96], char_height: 66 } # = SMALL_FRAME; козочка, как зайчёнок
   portrait: 64
   prop: 32
   directions: [down, left, right, up] # порядок строк спрайтшита = DIR_ROWS в src/config.ts

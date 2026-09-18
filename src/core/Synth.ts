@@ -379,10 +379,6 @@ export function playSynthSfx(ctx: AudioContext, out: AudioNode, name: string, op
     case 'select':
       tone(ctx, out, { type: 'square', from: 660, to: 990, dur: 0.07, vol: 0.12 * v });
       break;
-    case 'bark':
-      burst(ctx, out, 0.09, 0.5 * v, 900, 300, 0, 'bandpass');
-      tone(ctx, out, { type: 'sawtooth', from: 380 * r, to: 220 * r, dur: 0.12, vol: 0.22 * v });
-      break;
     case 'pickup':
       [523, 659, 784, 1047].forEach((f, i) => tone(ctx, out, { type: 'square', from: f * r, dur: 0.12, vol: 0.12 * v, at: i * 0.07 }));
       break;

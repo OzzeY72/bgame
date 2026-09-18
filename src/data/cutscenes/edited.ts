@@ -20,7 +20,6 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
       ] },
       { actor: 'freya', face: 'down' },
       { actor: 'freya', emote: '!' },
-      { sfx: 'bark' },
       { say: 'freya', text: 'Гав!' },
       { actor: 'player', emote: '?' },
       { think: 'Она ведёт себя странно. Может, стоит прогуляться?' },
@@ -37,7 +36,6 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
         ],
         else: [
           { actor: 'freya', emote: '!' },
-          { sfx: 'bark' },
           { branch: {
             if: ['!minigame:feed:played'],
             then: [
@@ -55,7 +53,6 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
             if: ['minigame:feed:won', '!minigame:feed:lost'],
             then: [
               { actor: 'freya', emote: '♥' },
-              { sfx: 'bark' },
               { say: 'freya', text: 'Гав!' },
               { branch: {
                 if: ['!packed:feed_gift'],
@@ -143,7 +140,6 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
       ] },
       { actor: 'freya2', face: 'up' },
       { actor: 'freya2', emote: '!' },
-      { sfx: 'bark' },
       { say: 'freya', text: 'Гав! Гав-гав-гав!' },
       { think: 'Малыш смотрит в небо. Там шахеды летят' },
       { minigame: 'shahed' },
@@ -151,7 +147,6 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
         if: ['minigame:shahed:won'],
         then: [
           { actor: 'freya2', emote: '♥' },
-          { sfx: 'bark' },
           { say: 'freya', text: 'Гав!' },
           { think: 'Небо чистое. А на газоне слева... коробка? Её тут не было.' },
           { actor: 'freya2', path: [[2, 5]], speed: 130 },

@@ -122,7 +122,7 @@ draw»); если посылка уже в инвентаре, новый рис
 
 ## Звук (`core/Audio.ts`)
 
-`audio.playMusic('home')` / `audio.stopMusic()` / `audio.sfx('bark')`; `M` — mute; **Esc — настройки** (UIScene: ползунки
+`audio.playMusic('home')` / `audio.stopMusic()` / `audio.sfx('select')`; `M` — mute; **Esc — настройки** (UIScene: ползунки
 музыки и эффектов, ↑↓/←→ или клик по полосе, по умолчанию `AUDIO.music/sfx` = 20 %; пока панель открыта — ввод мира
 заблокирован через `lockInput`); громкости в localStorage (`AUDIO.key`).
 Голос в диалоге: `CharacterDef.voice` (`characters.ts`) — при печати реплики `audio.voice()` играет случайный из

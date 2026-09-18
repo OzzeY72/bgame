@@ -62,6 +62,7 @@ export const street: MapDef = {
   ],
   triggers: [
     { id: 'sky', x: 8, y: 4, w: 2, h: 6, cutscene: 'sky_alarm', if: ['!minigame:shahed:won'] },
-    { id: 'lamb_trigger', x: 14, y: 4, w: 3, h: 6, cutscene: 'lamb_run', if: ['!lamb_run_done'] },
   ],
+  outdoor: true,
+  leaves: true,
 };

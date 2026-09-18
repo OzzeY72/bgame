@@ -28,7 +28,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
       ] },
       { actor: 'freya', face: 'left' },
       { actor: 'freya', emote: '!' },
-      { sfx: 'bark' },
       { say: 'freya', text: 'Гав!' },
       { actor: 'player', emote: '?' },
       { think: 'Она ведёт себя странно. Может, стоит прогуляться?' },
@@ -128,7 +127,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
         { actor: 'player', face: 'down' },
       ] },
       { spawn: { id: 'freya2', sprite: 'freya', at: [1, 6], dir: 'down' } },
-      { sfx: 'bark' },
       { actor: 'freya2', path: [[10, 6]], speed: 140 },
       { actor: 'freya2', emote: '♥' },
       { say: 'freya', text: 'Гав! Гав!' },
@@ -202,7 +200,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
         then: [{ dialogue: 'freya_yard' }],
         else: [
           { actor: 'freya', emote: '!' },
-          { sfx: 'bark' },
           { branch: {
             if: ['!minigame:feed:played'],
             then: [
@@ -220,7 +217,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
             if: ['minigame:feed:won', '!minigame:feed:lost'],
             then: [
               { actor: 'freya', emote: '♥' },
-              { sfx: 'bark' },
               { say: 'freya', text: 'Гав!' },
               { branch: {
                 if: ['!packed:feed_gift'],
@@ -321,7 +317,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
       ] },
       { actor: 'freya2', face: 'up' },
       { actor: 'freya2', emote: '!' },
-      { sfx: 'bark' },
       { say: 'freya', text: 'Гав! Гав-гав-гав!' },
       { think: 'Малыш смотрит в небо. Там шахеды летят' },
       { minigame: 'shahed' },
@@ -329,7 +324,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
         if: ['minigame:shahed:won'],
         then: [
           { actor: 'freya2', emote: '♥' },
-          { sfx: 'bark' },
           { say: 'freya', text: 'Гав!' },
           { think: 'Небо чистое. А на газоне слева... коробка? Её тут не было.' },
           { actor: 'freya2', path: [[2, 5]], speed: 130 },
@@ -370,25 +364,6 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
     ],
   },
 
-  /** улица: появление овечки (lamb) из-за кустов */
-  lamb_run: {
-    id: 'lamb_run',
-    once: true,
-    script: [
-      { sfx: 'alert' },
-      { actor: 'player', emote: '?' },
-      { spawn: { id: 'lamb', sprite: 'lamb', at: [11, 11], dir: 'down' } },
-      { sfx: 'notify' },
-      { actor: 'lamb', emote: '!' },
-      { say: 'lamb', text: 'Ме-е-е!' },
-      { actor: 'player', emote: '!' },
-      { say: 'anastasiia', text: 'Ой! Это козочка?!' },
-      { actor: 'lamb', face: 'right' },
-      { actor: 'lamb', path: [[18, 11], [25, 11]], speed: 150 },
-      { remove: 'lamb' },
-      { setFlag: 'lamb_run_done' },
-    ],
-  },
 };
 
 export const CUTSCENES: Record<string, Cutscene> = { ...HANDMADE_CUTSCENES, ...EDITED_CUTSCENES };
