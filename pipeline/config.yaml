@@ -1,0 +1,91 @@
+# Настройки пайплайна ассетов. Пути относительно корня репозитория.
+# Переменные окружения (или pipeline/.env): GEMINI_API_KEY, COMFY_URL.
+
+comfy:
+  url: http://127.0.0.1:8188 # ComfyUI portable. Comfy Desktop обычно на :8000. RunPod — свой URL.
+  timeout_sec: 1800
+  poll_sec: 1.5
+
+# Локальная генерация: FLUX.2 [klein] 4B (text-to-image и image edit через ReferenceLatent).
+# Файлы кладутся в ComfyUI/models/{diffusion_models,text_encoders,vae}. Имена — как в официальных
+# шаблонах ComfyUI. Если unet заканчивается на .gguf — используется UnetLoaderGGUF (ComfyUI-GGUF).
+klein:
+  unet: flux-2-klein-base-4b-fp8.safetensors # альтернативы: flux-2-klein-base-4b.safetensors, *.gguf (Q4/Q5 для 4 ГБ VRAM)
+  clip: qwen_3_4b.safetensors # или qwen_3_4b_fp4_mixed.safetensors
+  vae: flux2-vae.safetensors
+  distilled: false # true для flux-2-klein-4b(-fp8): 4 шага, cfg 1
+  steps: 20 # base: 20-30
+  cfg: 4.0 # base: 4-5; distilled: 1
+  sampler: euler
+  width: 1024
+  height: 1024
+  ref_megapixels: 1.0 # референсы масштабируются к ~1 MP
+  lora: "" # например pixelart_klein.safetensors (в models/loras); пусто — без LoRA
+  lora_strength: 0.8
+
+# FLUX.2 [dev] 32B на удалённом ComfyUI (RunPod, образ Desktop/ai/runpod2 — он же скачивает эти модели).
+# Отдельный сервер: flux.url или переменная FLUX_COMFY_URL; пусто — тот же comfy.url, что и у klein.
+# Граф — официальный шаблон FLUX.2 dev: без negative, FluxGuidance + BasicGuider (build_workflows.flux_graph).
+flux:
+  url: "" # RunPod: https://<pod-id>-8188.proxy.runpod.net
+  unet: flux2_dev_fp8mixed.safetensors
+  clip: mistral_3_small_flux2_fp8.safetensors # текстовый энкодер dev — Mistral Small 3 (у klein — Qwen3)
+  vae: flux2-vae.safetensors
+  steps: 20
+  guidance: 4.0
+  sampler: euler
+  width: 1024
+  height: 1024
+  ref_megapixels: 1.0
+  lora: "" # например Flux_2-Turbo-LoRA_comfyui.safetensors (8 шагов); пусто — без LoRA
+  lora_strength: 1.0
+
+# Nano Banana напрямую через Gemini API (без ComfyUI). Ключ: GEMINI_API_KEY.
+gemini:
+  model: gemini-3-pro-image-preview # Nano Banana Pro: до 14 референсов, лучшая консистентность
+  # model: gemini-3.1-flash-image     # Nano Banana 2: дешевле/быстрее
+  aspect_ratio: "1:1"
+  image_size: 1K # 1K | 2K | 4K (только для pro)
+
+# Бэкенд мини-игры «нарисуй любимый предмет» (server/draw_server.py): рисунок игрока -> Nano Banana ->
+# пиксель-арт pixel.prop x pixel.prop -> подпись текстовой моделью -> вебхук (WEBHOOK_URL в pipeline/.env).
+draw:
+  model: gemini-3.1-flash-image # картинка по рисунку; gemini-3-pro-image-preview — качественнее и дольше
+  caption_model: gemini-3.6-flash # название и подпись по-русски
+  colors: 24
+  port: 8766
+  data: server/data # рисунки, сырые генерации, спрайты, meta.json (в .gitignore)
+
+# Nano Banana через API-ноду ComfyUI (GeminiImage2Node, нужен аккаунт/кредиты comfy.org).
+comfy_gemini:
+  model: gemini-3-pro-image-preview
+  aspect_ratio: "1:1"
+  resolution: 1K
+
+# Пост-обработка → пиксель-арт. Размеры согласованы с src/config.ts.
+pixel:
+  tile: 32
+  key_color: magenta # цвет фона-хромакея в генерациях: magenta (#FF00FF) или green (#00FF00)
+  post_key:
+    auto # что вырезать в post: auto — медиана по углам картинки (модели рисуют «свою» мадженту:
+    # flux даёт #F70570, до #FF00FF ≈ 143 > допуска), или magenta/green/#rrggbb; --key переопределяет
+  key_tolerance: 70 # допуск по расстоянию в RGB
+  colors: 32 # квантование палитры на спрайт
+  alpha_threshold: 128
+  palette: "" # общий файл палитры PNG (опционально): pipeline/palette.png
+  characters:
+    anastasiia: { frame: [48, 96], char_height: 80 } # = CHAR_FRAME в src/config.ts
+    me: { frame: [48, 96], char_height: 80 }
+    freya: { frame: [96, 64], char_height: 54 } # = DOG_FRAME: рост 2/3 Настасьи, в профиль шире, чем выше
+    rabbit: { frame: [96, 96], char_height: 66 }
+  portrait: 64
+  prop: 32
+  directions: [down, left, right, up] # порядок строк спрайтшита = DIR_ROWS в src/config.ts
+  walk_frames: 4 # кадров на направление (колонок листа): ходьба [шаг, стоим, шаг, стоим]; idle-строки (дыхание) — столько же кадров
+  mirror_left: true # если нет кадров left — отзеркалить right
+
+paths:
+  out: pipeline/out
+  refs: refs
+  assets: public/assets
+  tiles_json: src/data/tiles.json

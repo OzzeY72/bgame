@@ -1,0 +1,2 @@
+# pipeline/batch/curb/gen.txt — tile: --name подставится из имени папки
+tile --subject "a concrete curb/kerb strip between sidewalk and road, a light grey band with a subtle raised-edge shadow line along one long side" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

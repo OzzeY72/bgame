@@ -1,0 +1,2 @@
+# pipeline/batch/sewer_wall/gen.txt — facade: стена канализации (символ %), кладётся и рамкой, и опорами посреди зала — должна стыковаться со всех сторон
+facade --subject "an old sewer tunnel wall of dark grey-green bricks with darker mortar joints, damp stains and a couple of small slimy green moss patches, evenly lit, uniform brick pattern across the whole tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

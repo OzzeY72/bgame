@@ -1,0 +1,2 @@
+# pipeline/batch/window/gen.txt — facade: --name подставится из имени папки
+facade --subject "a closed apartment window with a white wooden frame divided into four panes, pale blue-grey glass with a faint reflection and a hint of a curtain behind it, set into a beige wall" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

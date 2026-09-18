@@ -1,0 +1,7 @@
+Create a 4-frame pixel art idle/breathing animation sprite sheet of this exact character (image 1), facing {direction_desc}.
+Arrange the 4 frames in a 2x2 grid of equal cells on a uniform {key} background. Feet on the same baseline, body centered in each cell, no borders between cells.
+Frame 1: neutral relaxed standing. Frame 2: slight inhale, chest and shoulders rise 1-2 pixels. Frame 3: full breath, slightly taller posture. Frame 4: exhale, settling back to neutral. Movements must be SUBTLE.
+Same character design, same size and colors in all frames.
+CHROMAKEY: background solid flat uniform {key}, EXACTLY hex {key_hex}, no shadows, no gradients. The character must NOT contain any {key} colors.
+{extra}
+Style: {style}.

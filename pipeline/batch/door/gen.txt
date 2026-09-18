@@ -1,0 +1,2 @@
+# pipeline/batch/door/gen.txt — facade: --name подставится из имени папки
+facade --subject "a closed wooden entrance door, dark brown painted panels, a small rectangular glass insert near the top, simple brass handle" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

@@ -1,0 +1,4 @@
+Turn the person from the reference photo into a pixel art game character. Full body, standing, facing the viewer, relaxed idle pose, arms at the sides. Keep the recognizable features: hairstyle and hair color, face shape, skin tone, clothing style and colors from the photo, but simplified into chibi-ish RPG proportions (head about 1/3 of total height, like Stardew Valley characters). Single character, centered, occupying about 80% of the image height.
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}. No shadows on the ground, no gradients, no lighting effects, no other objects. The character must NOT contain any {key} colors.
+{extra}
+Style: {style}.

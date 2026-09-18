@@ -1,0 +1,4 @@
+A pixel art building facade for an RPG game: {subject}. FLAT FRONT ELEVATION like a dollhouse facade or architectural drawing, camera perpendicular to the wall: the wall faces the viewer directly, the roof is only a thin strip visible along the very top edge (10-15% of the image height). Do NOT render the left or right side wall, do NOT turn this into a 3D isometric box, cube or diorama — this is a flat 2D drawing of the front only, not a 3D model. Clear grid-like structure: windows and doors aligned to a 32px grid, repeating floors, the entrance door at the bottom center. No people, no vehicles, no text or signs unless requested.
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}, no shadows, no gradients. The building must NOT contain any {key} colors.
+{extra}
+Style: {style}.

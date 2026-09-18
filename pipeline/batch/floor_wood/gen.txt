@@ -1,0 +1,2 @@
+# pipeline/batch/floor_wood/gen.txt — tile: --name подставится из имени папки
+tile --subject "warm honey-brown wooden floor planks, horizontal plank seams, cozy indoor flooring" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

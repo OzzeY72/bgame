@@ -1,0 +1,3 @@
+# pipeline/batch/ladder/gen.txt — facade (непрозрачный тайл слоя ground, символ H): лестница наверх к люку в углу канализации,
+# фон — тот же сырой тёмный камень, чтобы не просвечивал чёрный bg сцены
+facade --subject "a rusty iron maintenance ladder seen straight from the front: two vertical side rails and evenly spaced horizontal rungs, the ladder running the full height of the tile from top edge to bottom edge, mounted against a background of damp dark grey-green sewer stone that fills the rest of the frame" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

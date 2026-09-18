@@ -1,0 +1,7 @@
+Turn the dog from the reference photo into a pixel art game character. Full body, standing on all four legs, facing the viewer, relaxed idle pose. Keep the recognizable features from the reference photo: breed/type, body shape, fur color and pattern, face shape, ear shape and position, muzzle, eye color, distinctive markings, tail shape, and overall appearance. Simplify the dog into cute chibi-ish RPG proportions while keeping it clearly recognizable as the same dog, in the style and visual readability of Stardew Valley characters. Single character, centered, occupying about 80% of the image height.
+
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}. No shadows on the ground, no gradients, no lighting effects, no other objects. The dog must NOT contain any {key} colors.
+
+{extra}
+
+Style: {style}.

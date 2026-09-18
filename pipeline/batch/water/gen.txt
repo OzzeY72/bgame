@@ -1,0 +1,2 @@
+# pipeline/batch/water/gen.txt — tile: вода канала (символ ~), две строки подряд — нужна бесшовность. post: post tile --name water --in ... --seamless
+tile --subject "murky dark teal-green sewer canal water, calm flat surface with a few pale thin ripple highlights and tiny specks of floating foam, uniform across the tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

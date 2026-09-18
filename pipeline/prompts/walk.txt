@@ -1,0 +1,8 @@
+Create a 4-frame pixel art walk cycle sprite sheet of this exact character (image 1), walking {direction_desc}.
+Arrange the 4 frames in a 2x2 grid of equal cells on a uniform {key} background. Every element of each frame must fit inside its cell, with the character's feet on the same baseline and the body horizontally centered in each cell. DO NOT draw borders or lines between the cells.
+Top row: Frame 1 (top-left): right leg forward, left leg back - stride. Frame 2 (top-right): legs together, passing position (looks like standing).
+Bottom row: Frame 3 (bottom-left): left leg forward, right leg back - opposite stride. Frame 4 (bottom-right): legs together, passing position again.
+Same character design, same size, same colors, same outfit in all 4 frames. Character facing {direction_desc}. Subtle arm swing opposite to the legs.
+CHROMAKEY: background is a solid flat uniform {key} color, EXACTLY hex {key_hex}, NO variation, NO gradients, NO shadows. The character must NOT contain any {key} colors.
+{extra}
+Style: {style}.

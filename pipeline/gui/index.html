@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>bgame · пайплайн ассетов</title>
+<style>
+  :root {
+    --bg: #17151c; --panel: #201d27; --panel2: #2a2633; --line: #3a3545; --text: #e8e2ee; --dim: #9c94a8;
+    --accent: #f2a7c3; --accent2: #8ab4f8; --ok: #8fd19e; --err: #f28b8b; --warn: #f2d38b;
+    --mono: ui-monospace, Consolas, "Cascadia Mono", monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.4 system-ui, "Segoe UI", sans-serif; height: 100vh; display: grid; grid-template-rows: auto 1fr auto; }
+  header { display: flex; align-items: center; gap: 12px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 15px; margin: 0 8px 0 0; color: var(--accent); font-weight: 600; }
+  .chip { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: var(--panel2); color: var(--dim); border: 1px solid var(--line); }
+  .chip.ok { color: var(--ok); } .chip.err { color: var(--err); }
+  main { display: grid; grid-template-columns: 220px 1fr; min-height: 0; }
+  aside { border-right: 1px solid var(--line); background: var(--panel); overflow: auto; padding: 8px; }
+  aside h3, section h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); margin: 10px 0 6px; }
+  .ent { display: block; width: 100%; text-align: left; padding: 5px 8px; border-radius: 6px; border: 0; background: transparent; color: var(--text); cursor: pointer; font: inherit; }
+  .ent:hover { background: var(--panel2); } .ent.active { background: var(--accent); color: #2a1f2d; font-weight: 600; }
+  .content { display: grid; grid-template-rows: auto 1fr; min-height: 0; }
+  nav.tabs { display: flex; gap: 2px; padding: 6px 10px 0; border-bottom: 1px solid var(--line); background: var(--panel); }
+  nav.tabs button { background: transparent; border: 1px solid transparent; border-bottom: 0; color: var(--dim); padding: 7px 14px; border-radius: 8px 8px 0 0; cursor: pointer; font: inherit; }
+  nav.tabs button.active { background: var(--bg); color: var(--text); border-color: var(--line); }
+  .tab { display: none; overflow: auto; padding: 14px; } .tab.active { display: block; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-bottom: 10px; }
+  label.f { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--dim); min-width: 120px; }
+  label.f.w { flex: 1 1 320px; } label.f.s { min-width: 70px; }
+  label.f > span b { color: var(--text); font-weight: 500; }
+  input, select, textarea { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; font: inherit; }
+  input[type=number] { width: 90px; } input[type=checkbox] { width: auto; }
+  textarea { font-family: var(--mono); font-size: 12px; min-height: 90px; width: 100%; }
+  label.c { display: inline-flex; gap: 6px; align-items: center; color: var(--dim); font-size: 13px; padding-bottom: 6px; }
+  button.b { background: var(--panel2); color: var(--text); border: 1px solid var(--line); border-radius: 6px; padding: 6px 12px; cursor: pointer; font: inherit; }
+  button.b:hover { border-color: var(--accent); } button.b.p { background: var(--accent); color: #2a1f2d; border-color: var(--accent); font-weight: 600; }
+  button.b.sm { padding: 2px 8px; font-size: 12px; }
+  .hint { color: var(--dim); font-size: 12px; margin: 4px 0 10px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .tile { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 5px; }
+  .tile.sel { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .tile img { width: 100%; aspect-ratio: 1; object-fit: contain; background: repeating-conic-gradient(#2c2836 0 25%, #221f2a 0 50%) 0 0/16px 16px; border-radius: 4px; image-rendering: pixelated; cursor: zoom-in; }
+  .tile .n { font-size: 11px; color: var(--dim); word-break: break-all; } .tile .acts { display: flex; flex-wrap: wrap; gap: 3px; }
+  .chklist { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-bottom: 10px; }
+  .chklist label { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+  .chklist label.off { opacity: .45; text-decoration: line-through; }
+  .refs { display: flex; flex-wrap: wrap; gap: 6px; }
+  .refs .r { display: inline-flex; align-items: center; gap: 5px; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 2px 6px; font-size: 12px; }
+  .refs .r img { height: 28px; width: 28px; object-fit: cover; border-radius: 3px; }
+  .refs .r button { background: none; border: 0; color: var(--dim); cursor: pointer; }
+  footer { border-top: 1px solid var(--line); background: var(--panel); display: grid; grid-template-columns: 300px 1fr; height: 230px; min-height: 0; }
+  footer.min { height: 34px; } footer.min .jobs, footer.min pre { display: none; }
+  .jobs { overflow: auto; border-right: 1px solid var(--line); padding: 4px; }
+  .job { padding: 4px 8px; border-radius: 6px; cursor: pointer; font-size: 12px; display: flex; gap: 6px; align-items: center; }
+  .job.active { background: var(--panel2); } .job .st { width: 8px; height: 8px; border-radius: 50%; background: var(--dim); flex: none; }
+  .job.running .st { background: var(--accent2); animation: blink 1s infinite; } .job.done .st { background: var(--ok); } .job.error .st { background: var(--err); } .job.cancelled .st { background: var(--warn); }
+  @keyframes blink { 50% { opacity: .3; } }
+  footer pre { margin: 0; padding: 8px 12px; overflow: auto; font: 12px/1.45 var(--mono); color: #d7d0e0; white-space: pre-wrap; }
+  .fbar { grid-column: 1 / -1; display: flex; gap: 10px; align-items: center; padding: 4px 10px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--dim); }
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.7); display: none; align-items: center; justify-content: center; z-index: 10; }
+  .modal.open { display: flex; } .modal .box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px; max-width: 92vw; max-height: 92vh; overflow: auto; }
+  .modal img { max-width: 86vw; max-height: 80vh; image-rendering: pixelated; background: repeating-conic-gradient(#2c2836 0 25%, #221f2a 0 50%) 0 0/16px 16px; }
+  .modal pre { white-space: pre-wrap; font: 12px/1.45 var(--mono); max-width: 80vw; }
+  .split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } @media (max-width: 1100px) { .split { grid-template-columns: 1fr; } }
+  .missing { color: var(--warn); font-family: var(--mono); font-size: 12px; }
+  code { font-family: var(--mono); font-size: 12px; background: var(--panel2); padding: 1px 4px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>bgame · пайплайн</h1>
+  <span class="chip" id="chipComfy">ComfyUI</span>
+  <span class="chip" id="chipFlux">flux</span>
+  <span class="chip" id="chipGemini">Gemini</span>
+  <span style="flex:1"></span>
+  <button class="b sm" onclick="run('ping',{})">ping</button>
+  <button class="b sm" onclick="run('validate',{})">validate klein</button>
+  <button class="b sm" onclick="run('validate',{flux:true})">validate flux</button>
+  <button class="b sm" onclick="loadState()">обновить</button>
+</header>
+
+<main>
+  <aside>
+    <h3>Сущности (out/)</h3>
+    <div class="row" style="gap:4px">
+      <input id="newEnt" placeholder="имя" style="width:120px" onkeydown="if(event.key==='Enter')mkEntity()">
+      <button class="b sm" onclick="mkEntity()">+</button>
+    </div>
+    <div id="entList"></div>
+    <h3>Тайлы</h3>
+    <button class="ent" onclick="selectEntity('tiles')">out/tiles (тайлсет)</button>
+  </aside>
+
+  <div class="content">
+    <nav class="tabs">
+      <button data-tab="gen" class="active">Генерация</button>
+      <button data-tab="post">Пост-обработка</button>
+      <button data-tab="pack">Сборка / approve</button>
+      <button data-tab="batch">Пакет</button>
+      <button data-tab="files">Файлы</button>
+      <button data-tab="cfg">Настройки</button>
+    </nav>
+
+    <!-- ================= ГЕНЕРАЦИЯ ================= -->
+    <div class="tab active" id="tab-gen">
+      <div class="card">
+        <div class="row">
+          <label class="f"><span>Вид (<b>kind</b>)</span><select id="g_kind" onchange="genKindChanged()"></select></label>
+          <label class="f"><span>Имя (<b>--name</b>)</span><input id="g_name" placeholder="girl, grass, camera…" list="entNames"></label>
+          <label class="f"><span>Бэкенд</span><select id="g_backend"></select></label>
+          <label class="f" id="g_dir_wrap"><span>Направление (<b>--dir</b>)</span><select id="g_dir"><option value="">—</option></select></label>
+          <label class="f s"><span>seed</span><input id="g_seed" type="number" placeholder="случайный"></label>
+          <label class="f s"><span>n</span><input id="g_n" type="number" value="1" min="1"></label>
+          <label class="f s"><span>size WxH</span><input id="g_size" placeholder="1024x1024" style="width:110px"></label>
+          <label class="f"><span>model (gemini)</span><input id="g_model" placeholder="из config"></label>
+        </div>
+        <div class="row">
+          <label class="f w"><span>Описание (<b>--subject</b>): prop/tile/object/building/restyle</span><input id="g_subject" placeholder="short green lawn grass"></label>
+          <label class="f"><span>Эмоция (<b>--emotion</b>, portrait)</span><input id="g_emotion" placeholder="happy"></label>
+        </div>
+        <div class="row">
+          <label class="f w"><span>Добавка к промпту (<b>--extra</b>)</span><input id="g_extra"></label>
+          <label class="f w"><span>Negative (только klein)</span><input id="g_negative" value="blurry, photo, 3d render, text, watermark, gradient background"></label>
+        </div>
+        <div class="row">
+          <label class="f w"><span>Референсы (<b>--ref</b>) — для персонажных видов по умолчанию берутся <code>out/&lt;name&gt;/views/&lt;dir&gt;.png</code> + <code>card.png</code></span>
+            <div class="refs" id="g_refs"></div>
+          </label>
+          <button class="b sm" onclick="openPicker()">+ выбрать файл</button>
+          <input id="g_ref_manual" placeholder="или путь вручную" style="width:260px" onkeydown="if(event.key==='Enter'){addRef(this.value);this.value=''}">
+        </div>
+        <div class="row">
+          <label class="c"><input type="checkbox" id="g_show"> show-prompt</label>
+          <label class="c"><input type="checkbox" id="g_dump"> dump-graph</label>
+          <span style="flex:1"></span>
+          <button class="b" onclick="submitGen(true)">Показать промпт (dry-run)</button>
+          <button class="b p" onclick="submitGen(false)">Сгенерировать</button>
+        </div>
+        <div class="hint" id="g_hint"></div>
+      </div>
+      <div class="card">
+        <h3>Сырые генерации <span id="g_rawTitle"></span></h3>
+        <div class="gallery" id="g_raw"></div>
+      </div>
+    </div>
+
+    <!-- ================= ПОСТ ================= -->
+    <div class="tab" id="tab-post">
+      <div class="card">
+        <div class="row">
+          <label class="f"><span>Вид (<b>kind</b>)</span><select id="p_kind" onchange="postKindChanged()"></select></label>
+          <label class="f"><span>Имя (<b>--name</b>)</span><input id="p_name" list="entNames"></label>
+          <label class="f w"><span>Входной файл (<b>--in</b>) — клик по картинке в галерее ниже</span><input id="p_in"></label>
+        </div>
+        <div class="row" data-for="sheet walk idle">
+          <label class="f"><span>dir</span><select id="p_dir"><option value="">—</option></select></label>
+          <label class="f s"><span>rows</span><input id="p_rows" type="number" placeholder="2"></label>
+          <label class="f s"><span>cols</span><input id="p_cols" type="number" placeholder="2"></label>
+          <label class="f s"><span>inset px</span><input id="p_inset" type="number" placeholder="0"></label>
+          <label class="f s"><span>split</span><select id="p_split" title="blobs — по островам содержимого, когда фигуры разной ширины (собака) и сетка режет нос"><option>grid</option><option>blobs</option></select></label>
+          <label class="f s"><span>scale (принудительно)</span><input id="p_scale" type="number" step="0.0001" placeholder="авто"></label>
+        </div>
+        <div class="row">
+          <label class="f"><span>method</span><select id="p_method"><option>box</option><option>nearest</option><option>lanczos</option><option>bilinear</option></select></label>
+          <label class="f s"><span>colors</span><input id="p_colors" type="number" placeholder="из config"></label>
+          <label class="f"><span>key</span><input id="p_key" placeholder="magenta | green | auto | none | #rrggbb" style="width:200px"></label>
+          <label class="f s"><span>tolerance</span><input id="p_tolerance" type="number" placeholder="70"></label>
+          <label class="c" data-for="sheet walk idle portrait prop object building"><input type="checkbox" id="p_noclean"> no-clean (не убирать линии/крапинки)</label>
+        </div>
+        <div class="row" data-for="portrait">
+          <label class="f"><span>emotion (суффикс файла)</span><input id="p_emotion" placeholder="happy"></label>
+          <label class="f"><span>fit</span><select id="p_fit"><option value="">contain</option><option>cover</option></select></label>
+        </div>
+        <div class="row" data-for="prop tile">
+          <label class="f s"><span>tile px</span><input id="p_tile" type="number" placeholder="32"></label>
+          <label class="c" data-for="tile"><input type="checkbox" id="p_seamless"> seamless (бесшовный)</label>
+        </div>
+        <div class="row" data-for="tile object building">
+          <label class="f"><span>tiles WxH (в тайлах)</span><input id="p_tiles" placeholder="2x1 / 1x2 / 10x4"></label>
+          <label class="f w"><span>names (через запятую, слева направо, сверху вниз; «-» = пропустить)</span><input id="p_names" placeholder="tree_top,tree_trunk"></label>
+        </div>
+        <div class="row" data-for="ui">
+          <label class="f s"><span>width</span><input id="p_width" type="number" placeholder="500"></label>
+          <label class="f s"><span>stretch-x</span><input id="p_stretchx" type="number"></label>
+          <label class="f s"><span>thresh</span><input id="p_thresh" type="number" placeholder="14"></label>
+          <label class="f s"><span>scale</span><input id="p_uiscale" type="number" step="0.0001" placeholder="0.1667"></label>
+          <label class="f w"><span>erase x0,y0,x1,y1 (по одному на строку)</span><textarea id="p_erase" style="min-height:48px"></textarea></label>
+          <label class="f w"><span>rect name=x0,y0,x1,y1 (по одному на строку)</span><textarea id="p_rect" style="min-height:48px"></textarea></label>
+        </div>
+        <div class="row">
+          <span class="hint" id="p_hint" style="flex:1"></span>
+          <button class="b p" onclick="submitPost()">Обработать</button>
+        </div>
+      </div>
+      <div class="split">
+        <div class="card"><h3>Сырые файлы <span id="p_rawTitle"></span></h3><div class="gallery" id="p_raw"></div></div>
+        <div class="card"><h3>Результат (превью)</h3><div class="gallery" id="p_prev"></div></div>
+      </div>
+    </div>
+
+    <!-- ================= СБОРКА ================= -->
+    <div class="tab" id="tab-pack">
+      <div class="split">
+        <div class="card">
+          <h3>pack sheet — лист персонажа → public/assets/characters/&lt;name&gt;.png</h3>
+          <div class="row">
+            <label class="f"><span>Персонаж</span><select id="k_name"></select></label>
+            <button class="b p" onclick="run('pack',{what:'sheet',name:v('k_name')})">Собрать лист</button>
+          </div>
+          <div class="hint">Кадры берутся из <code>out/&lt;name&gt;/frames/&lt;dir&gt;_&lt;i&gt;.png</code>; недостающие left/right — зеркалом.</div>
+          <div class="gallery" id="k_sheet"></div>
+        </div>
+        <div class="card">
+          <h3>pack tiles — тайлсет по tiles.json → public/assets/tiles/tileset.png</h3>
+          <div class="row"><button class="b p" onclick="run('pack',{what:'tiles'})">Собрать тайлсет</button></div>
+          <div class="hint">Нет тайлов: <span class="missing" id="k_missing"></span></div>
+          <div class="gallery" id="k_tiles"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>approve — сделать картинку канонической карточкой персонажа (out/&lt;name&gt;/card.png)</h3>
+        <div class="row">
+          <label class="f"><span>Персонаж</span><input id="a_name" list="entNames"></label>
+          <label class="f w"><span>Файл (клик по «→ approve» в галерее)</span><input id="a_in"></label>
+          <label class="c"><input type="checkbox" id="a_raw"> raw (не убирать хромакей)</label>
+          <label class="f"><span>key</span><input id="a_key" placeholder="magenta" style="width:120px"></label>
+          <button class="b p" onclick="run('approve',{name:v('a_name'),in:v('a_in'),raw:chk('a_raw'),key:v('a_key')})">Approve</button>
+        </div>
+        <div id="a_card"></div>
+      </div>
+    </div>
+
+    <!-- ================= ПАКЕТ ================= -->
+    <div class="tab" id="tab-batch">
+      <div class="card">
+        <h3>batch_gen.py — pipeline/batch/&lt;entity&gt;/gen.txt</h3>
+        <div class="row">
+          <label class="f"><span>--backend</span><select id="b_backend"></select></label>
+          <label class="c"><input type="checkbox" id="b_dry"> dry-run</label>
+          <label class="c"><input type="checkbox" id="b_keep"> keep-going</label>
+          <button class="b p" onclick="run('batch', batchArgs())">Запустить</button>
+          <span class="hint" id="b_summary" style="margin:0"></span>
+        </div>
+        <div class="row" style="margin-bottom:6px">
+          <button class="b sm" onclick="batchSelectAll(true)">выбрать все</button>
+          <button class="b sm" onclick="batchSelectAll(false)">снять все</button>
+          <span class="hint" style="margin:0">Галочка снята — ассет исключается из пакетного запуска (--only остальных).</span>
+        </div>
+        <div class="chklist" id="b_checklist"></div>
+      </div>
+      <div class="card">
+        <div class="row">
+          <label class="f"><span>Файл сущности</span><select id="b_ent" onchange="loadBatch()"></select></label>
+          <button class="b sm" onclick="batchOnlyThis()">→ только этот</button>
+          <button class="b sm" onclick="saveText('b_path','b_text')">Сохранить gen.txt</button>
+        </div>
+        <textarea id="b_text" style="min-height:200px"></textarea>
+        <input type="hidden" id="b_path">
+      </div>
+    </div>
+
+    <!-- ================= ФАЙЛЫ ================= -->
+    <div class="tab" id="tab-files">
+      <div class="card">
+        <div class="row">
+          <h3 style="margin:0;flex:1" id="f_title">Файлы</h3>
+          <button class="b sm" onclick="openFolder(currentFolder())">открыть папку</button>
+        </div>
+        <div id="f_body"></div>
+      </div>
+      <div class="card"><h3>public/assets (то, что грузит игра)</h3><div class="gallery" id="f_assets"></div></div>
+    </div>
+
+    <!-- ================= НАСТРОЙКИ ================= -->
+    <div class="tab" id="tab-cfg">
+      <div class="split">
+        <div class="card">
+          <div class="row"><h3 style="margin:0;flex:1">pipeline/config.yaml</h3><button class="b sm" onclick="saveText('c_cfgpath','c_cfg')">Сохранить</button></div>
+          <textarea id="c_cfg" style="min-height:420px"></textarea><input type="hidden" id="c_cfgpath" value="pipeline/config.yaml">
+        </div>
+        <div class="card">
+          <div class="row">
+            <label class="f"><span>Промпт</span><select id="c_prompt" onchange="loadPrompt()"></select></label>
+            <span style="flex:1"></span>
+            <button class="b sm" onclick="saveText('c_promptpath','c_prompttext')">Сохранить</button>
+          </div>
+          <textarea id="c_prompttext" style="min-height:260px"></textarea><input type="hidden" id="c_promptpath">
+          <div class="hint">Плейсхолдеры: <code>{style} {key} {key_hex} {subject} {direction} {direction_desc} {emotion} {extra} {name}</code></div>
+          <div class="row"><h3 style="margin:0;flex:1">src/data/tiles.json</h3><button class="b sm" onclick="saveText('c_tilespath','c_tiles')">Сохранить</button></div>
+          <textarea id="c_tiles" style="min-height:160px"></textarea><input type="hidden" id="c_tilespath" value="src/data/tiles.json">
+        </div>
+      </div>
+      <div class="hint">Сервер: <code id="c_py"></code>. Ключ Gemini и URL — в <code>pipeline/.env</code> (<code>GEMINI_API_KEY</code>, <code>COMFY_URL</code>, <code>FLUX_COMFY_URL</code>); после правки перезапустить сервер.</div>
+    </div>
+  </div>
+</main>
+
+<footer id="footer">
+  <div class="fbar">
+    <button class="b sm" onclick="document.getElementById('footer').classList.toggle('min')">▾ задачи</button>
+    <span id="jobsSummary"></span>
+    <span style="flex:1"></span>
+    <button class="b sm" id="cancelBtn" onclick="cancelJob()" style="display:none">остановить</button>
+  </div>
+  <div class="jobs" id="jobs"></div>
+  <pre id="log">Лог появится здесь.</pre>
+</footer>
+
+<div class="modal" id="modal" onclick="if(event.target===this)this.classList.remove('open')"><div class="box" id="modalBox"></div></div>
+<datalist id="entNames"></datalist>
+
+<script>
+// ---------------------------------------------------------------- состояние
+let S = null;            // /api/state
+let curEnt = null;       // выбранная сущность
+let entData = null;      // /api/entity
+let tilesData = null;    // /api/tiles
+let refs = [];           // референсы для gen
+let curJob = null, logFrom = 0, pollTimer = null;
+const doneSeen = new Set();
+const KIND_HINT = {
+  card: 'Карточка персонажа из фото (--ref). Сгенерировать несколько (n), лучшую — approve.',
+  sheet: '4 вида 1x4 по карточке (референс out/<name>/card.png берётся сам). Потом post sheet.',
+  walk: 'Ходьба 2x2 для направления --dir (референсы: views/<dir>.png + card.png). Потом post walk.',
+  idle: 'Дыхание 2x2 для направления --dir (по умолчанию down — вид в камеру; референсы как у walk). Потом post idle.',
+  portrait: 'Портрет 64x64 по карточке; --emotion → суффикс файла.',
+  prop: 'Предмет по фото (--ref presents/...), --subject описание.',
+  tile: 'Плоская текстура сверху (земля, пол, крыша). Потом post tile --seamless.',
+  facade: 'Плоский фронтальный тайл фасада (стена, окно, дверь). Потом post tile.',
+  object: 'Отдельный объект на хромакее (дерево, лавка, фонарь). Потом post object --tiles.',
+  building: 'Фасад здания целиком (--ref фото). Потом post building --tiles WxH.',
+  restyle: 'Перерисовать image 1 в стиле image 2 (два --ref).',
+};
+const POST_HINT = {
+  sheet: 'Лист 1x4 (если модель нарисовала 2x2 — rows 2, cols 2; порядок: front, left, right, back) → views/<dir>.png (референсы для walk) + frames/<dir>_1.png (стойка).',
+  walk: 'Сетка rows x cols → frames/<dir>_0..3.png. Масштаб считается по самому высокому кадру файла.',
+  idle: 'Как walk → frames/idle_<dir>_0..3.png. pack sheet добавит строки дыхания под ходьбой; направления без idle стоят на кадре 1.',
+  portrait: '→ public/assets/portraits/<name>[_<emotion>].png (64x64).',
+  prop: '→ public/assets/props/<name>.png (32x32).',
+  tile: '→ pipeline/out/tiles/<name>.png (+ preview 3x3). Блок из нескольких тайлов (подъезд 2x1): tiles + names (entrance,entrance_r). Затем pack tiles.',
+  object: 'Объект на хромакее → сетка тайлов WxH (--tiles 1x2 для дерева: верх=крона, низ=ствол).',
+  building: 'Фасад → тайлы <name>_r{r}c{c}.png (--tiles 10x4); имена можно задать списком.',
+  ui: 'Панель диалога: фон убирается заливкой от краёв, растяжение до --width, --rect печатает области для DIALOGUE_PANEL.',
+};
+
+const $ = id => document.getElementById(id);
+const v = id => $(id).value.trim();
+const v2 = (id, val) => { $(id).value = val; };
+const chk = id => $(id).checked;
+const num = id => { const x = v(id); return x === '' ? null : Number(x); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const thumbUrl = (p, s = 256) => `/api/thumb?p=${encodeURIComponent(p)}&s=${s}`;
+const fileUrl = p => `/api/file?p=${encodeURIComponent(p)}`;
+const fmtTime = t => new Date(t * 1000).toLocaleString('ru-RU', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' });
+
+async function api(path, body) {
+  const r = await fetch(path, body ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {});
+  const j = await r.json();
+  if (j.error) { alert(j.error); throw new Error(j.error); }
+  return j;
+}
+
+// ---------------------------------------------------------------- вкладки
+document.querySelectorAll('nav.tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+function showTab(t) {
+  document.querySelectorAll('nav.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x.id === 'tab-' + t));
+  if (t === 'files') renderFiles();
+  if (t === 'pack') renderPack();
+}
+
+// ---------------------------------------------------------------- state
+async function loadState() {
+  S = await api('/api/state');
+  $('chipComfy').textContent = 'ComfyUI ' + S.comfy_url;
+  $('chipFlux').textContent = 'flux ' + (S.flux_url || '= тот же ComfyUI');
+  $('chipGemini').textContent = 'Gemini ' + (S.gemini_key ? 'ключ есть' : 'нет ключа');
+  $('chipGemini').className = 'chip ' + (S.gemini_key ? 'ok' : 'err');
+  $('c_py').textContent = S.python;
+  fill('g_kind', Object.keys(S.kinds));
+  fill('p_kind', S.post_kinds);
+  fill('g_backend', S.backends, S.default_backend);
+  fill('b_backend', S.backends, 'klein');
+  fill('g_dir', [''].concat(S.dirs)); fill('p_dir', [''].concat(S.dirs));
+  fill('k_name', Object.keys(S.characters));
+  fill('c_prompt', S.prompts); fill('b_ent', S.batch);
+  renderBatchChecklist();
+  $('entNames').innerHTML = S.entities.map(e => `<option value="${esc(e)}">`).join('');
+  $('entList').innerHTML = S.entities.map(e => `<button class="ent ${e === curEnt ? 'active' : ''}" onclick="selectEntity('${esc(e)}')">${esc(e)}</button>`).join('');
+  $('k_missing').textContent = S.tiles.missing.join(', ') || 'всё на месте';
+  $('f_assets').innerHTML = S.assets.map(i => tileHtml(i, [])).join('');
+  genKindChanged(); postKindChanged();
+  if (!$('c_cfg').value) loadText('pipeline/config.yaml', 'c_cfg');
+  if (!$('c_tiles').value) loadText('src/data/tiles.json', 'c_tiles');
+  if (!$('c_prompttext').value && S.prompts.length) loadPrompt();
+  if (!$('b_text').value && S.batch.length) loadBatch();
+  if (curEnt) await loadEntity(curEnt);
+}
+function fill(id, items, def) {
+  const el = $(id); const old = el.value;
+  el.innerHTML = items.map(x => `<option value="${esc(x)}">${esc(x || '—')}</option>`).join('');
+  el.value = items.includes(old) ? old : (def ?? items[0] ?? '');
+}
+
+async function selectEntity(name) {
+  curEnt = name;
+  document.querySelectorAll('.ent').forEach(b => b.classList.toggle('active', b.textContent === name));
+  if (name !== 'tiles') { v2('g_name', name); v2('p_name', name); v2('a_name', name); }
+  await loadEntity(name);
+  if ($('tab-files').classList.contains('active')) renderFiles();
+  if ($('tab-pack').classList.contains('active')) renderPack();
+}
+async function loadEntity(name) {
+  if (name === 'tiles') { tilesData = await api('/api/tiles'); entData = null; }
+  else { entData = await api('/api/entity?name=' + encodeURIComponent(name)); }
+  renderRaw();
+}
+async function mkEntity() {
+  const name = v('newEnt'); if (!name) return;
+  await api('/api/mkentity', { name }); v2('newEnt', '');
+  await loadState(); selectEntity(name);
+}
+
+// ---------------------------------------------------------------- галереи
+function tileHtml(i, acts, sel) {
+  const a = acts.map(([t, fn, title]) => `<button class="b sm" title="${esc(title || '')}" onclick="${fn}">${t}</button>`).join('');
+  return `<div class="tile ${sel ? 'sel' : ''}" data-p="${esc(i.path)}">
+    <img loading="lazy" src="${thumbUrl(i.path)}" onclick="zoom('${esc(i.path)}')" title="${esc(i.path)}">
+    <div class="n">${esc(i.name)}${i.mtime ? ' · ' + fmtTime(i.mtime) : ''}</div>
+    <div class="acts">${a}</div></div>`;
+}
+function rawActs(i) {
+  const p = JSON.stringify(i.path), acts = [];
+  acts.push(['→ post', `toPost(${esc(p)})`, 'в пост-обработку']);
+  if (/^card_/.test(i.name)) acts.push(['→ approve', `toApprove(${esc(p)})`, 'сделать карточкой']);
+  acts.push(['→ ref', `addRef(${esc(p)})`, 'добавить в референсы генерации']);
+  if (i.txt) acts.push(['промпт', `showText(${esc(JSON.stringify(i.txt))})`]);
+  return acts;
+}
+function renderRaw() {
+  const title = curEnt ? `— ${curEnt}` : '— выбери сущность слева';
+  $('g_rawTitle').textContent = title; $('p_rawTitle').textContent = title;
+  if (!entData) {
+    const t = tilesData ? tilesData.tiles.map(i => tileHtml(i, [])).join('') : '';
+    $('g_raw').innerHTML = t; $('p_raw').innerHTML = t;
+    $('p_prev').innerHTML = tilesData ? tilesData.previews.map(i => tileHtml(i, [])).join('') : '';
+    return;
+  }
+  const raw = entData.raw.map(i => tileHtml(i, rawActs(i), i.path === v('p_in'))).join('');
+  $('g_raw').innerHTML = raw || '<div class="hint">пока пусто</div>';
+  $('p_raw').innerHTML = raw || '<div class="hint">пока пусто</div>';
+  $('p_prev').innerHTML = entData.previews.map(i => tileHtml(i, [])).join('') + (entData.asset ? tileHtml({ path: entData.asset, name: 'спрайтшит (public/assets)' }, []) : '');
+}
+function zoom(p) { $('modalBox').innerHTML = `<img src="${fileUrl(p)}"><div class="hint">${esc(p)}</div>`; $('modal').classList.add('open'); }
+async function showText(p) { const t = await api('/api/text?p=' + encodeURIComponent(p)); $('modalBox').innerHTML = `<pre>${esc(t.text)}</pre>`; $('modal').classList.add('open'); }
+function openFolder(p) { if (p) api('/api/open', { p }); }
+function currentFolder() { return curEnt === 'tiles' ? 'pipeline/out/tiles' : curEnt ? `pipeline/out/${curEnt}` : 'pipeline/out'; }
+
+// ---------------------------------------------------------------- генерация
+function genKindChanged() {
+  const k = v('g_kind'); $('g_hint').textContent = KIND_HINT[k] || '';
+  $('g_dir_wrap').style.opacity = (k === 'walk' || k === 'idle') ? 1 : .45;
+}
+function addRef(p) { if (p && !refs.includes(p)) refs.push(p); renderRefs(); }
+function delRef(i) { refs.splice(i, 1); renderRefs(); }
+function renderRefs() {
+  $('g_refs').innerHTML = refs.map((p, i) => `<span class="r"><img src="${thumbUrl(p, 64)}">${esc(p)}<button onclick="delRef(${i})">✕</button></span>`).join('') || '<span class="hint">нет</span>';
+}
+function openPicker() {
+  const items = [].concat(S.refs, entData ? [entData.card ? { path: entData.card, name: 'card.png' } : null].filter(Boolean) : [], entData ? entData.views : [], entData ? entData.raw : []);
+  $('modalBox').innerHTML = `<h3>Референс</h3><div class="gallery" style="max-width:80vw">${items.map(i => `<div class="tile"><img src="${thumbUrl(i.path, 160)}" onclick="addRef('${esc(i.path)}');document.getElementById('modal').classList.remove('open')"><div class="n">${esc(i.path)}</div></div>`).join('')}</div>`;
+  $('modal').classList.add('open');
+}
+function submitGen(dry) {
+  if (!v('g_name')) return alert('Укажи --name');
+  run('gen', {
+    kind: v('g_kind'), name: v('g_name'), backend: v('g_backend'), dir: v('g_dir'), subject: v('g_subject'), emotion: v('g_emotion'),
+    extra: v('g_extra'), negative: v('g_negative'), seed: num('g_seed'), n: num('g_n'), size: v('g_size'), model: v('g_model'),
+    refs, 'show-prompt': chk('g_show'), 'dump-graph': chk('g_dump'), 'dry-run': dry,
+  });
+}
+
+// ---------------------------------------------------------------- пост
+function postKindChanged() {
+  const k = v('p_kind'); $('p_hint').textContent = POST_HINT[k] || '';
+  document.querySelectorAll('#tab-post [data-for]').forEach(el => { el.style.display = el.dataset.for.split(' ').includes(k) ? '' : 'none'; });
+}
+function toPost(p) {
+  const name = p.split('/').pop();
+  let kind = 'prop', dir = '', emotion = '';
+  const m = name.match(/^(sheet|walk|idle|portrait|prop|tile|facade|object|building|card|restyle)(?:_([a-z]+))?/);
+  if (m) {
+    kind = { facade: 'tile', card: 'portrait', restyle: 'prop' }[m[1]] || m[1];
+    if ((m[1] === 'walk' || m[1] === 'idle') && S.dirs.includes(m[2])) dir = m[2];
+    if (m[1] === 'portrait' && m[2] && !/^\d+$/.test(m[2])) emotion = m[2];
+  }
+  v2('p_in', p); v2('p_kind', kind); v2('p_dir', dir); v2('p_emotion', emotion);
+  if (curEnt && curEnt !== 'tiles') v2('p_name', curEnt);
+  if (kind === 'tile') $('p_seamless').checked = true;
+  postKindChanged(); showTab('post'); renderRaw();
+}
+function toApprove(p) { v2('a_in', p); if (curEnt) v2('a_name', curEnt); showTab('pack'); renderPack(); $('a_name').closest('.card').scrollIntoView({ block: 'start' }); }
+function lines(id) { return v(id).split('\n').map(s => s.trim()).filter(Boolean); }
+function submitPost() {
+  if (!v('p_name') || !v('p_in')) return alert('Нужны --name и --in');
+  const k = v('p_kind');
+  run('post', {
+    kind: k, name: v('p_name'), in: v('p_in'), dir: v('p_dir'), rows: num('p_rows'), cols: num('p_cols'), inset: num('p_inset'), split: v('p_split'),
+    scale: k === 'ui' ? num('p_uiscale') : num('p_scale'), method: v('p_method'), colors: num('p_colors'), key: v('p_key'), tolerance: num('p_tolerance'),
+    emotion: v('p_emotion'), fit: v('p_fit'), tile: num('p_tile'), tiles: v('p_tiles'), names: v('p_names'), seamless: chk('p_seamless'),
+    'no-clean': chk('p_noclean'), width: num('p_width'), 'stretch-x': num('p_stretchx'), thresh: num('p_thresh'), erase: lines('p_erase'), rect: lines('p_rect'),
+  });
+}
+
+// ---------------------------------------------------------------- сборка / файлы
+async function renderPack() {
+  const name = v('k_name');
+  const e = name ? await api('/api/entity?name=' + encodeURIComponent(name)) : null;
+  $('k_sheet').innerHTML = e ? (e.frames.map(i => tileHtml(i, [])).join('') + (e.asset ? tileHtml({ path: e.asset, name: 'спрайтшит ×4' }, []) : '')) : '';
+  const t = await api('/api/tiles');
+  $('k_tiles').innerHTML = (t.tileset ? tileHtml({ path: t.tileset, name: 'tileset.png' }, []) : '') + t.tiles.map(i => tileHtml(i, [])).join('');
+  const a = v('a_name'); const ae = a ? await api('/api/entity?name=' + encodeURIComponent(a)) : null;
+  $('a_card').innerHTML = ae && ae.card ? `<div class="gallery">${tileHtml({ path: ae.card, name: 'card.png (текущая)' }, [])}</div>` : '<div class="hint">карточки пока нет</div>';
+}
+$('k_name').onchange = renderPack;
+function renderFiles() {
+  $('f_title').textContent = 'Файлы — ' + (curEnt || 'выбери сущность');
+  if (!curEnt) { $('f_body').innerHTML = ''; return; }
+  if (curEnt === 'tiles') { $('f_body').innerHTML = `<div class="gallery">${(tilesData ? tilesData.tiles.concat(tilesData.previews) : []).map(i => tileHtml(i, [])).join('')}</div>`; return; }
+  const sec = (t, items, acts) => items.length ? `<h3>${t}</h3><div class="gallery">${items.map(i => tileHtml(i, acts ? acts(i) : [])).join('')}</div>` : '';
+  $('f_body').innerHTML =
+    (entData.card ? sec('card.png', [{ path: entData.card, name: 'card.png' }], i => [['→ ref', `addRef('${esc(i.path)}')`]]) : '') +
+    sec('raw/', entData.raw, rawActs) + sec('views/', entData.views, i => [['→ ref', `addRef('${esc(i.path)}')`]]) +
+    sec('frames/ (можно править руками, затем pack sheet)', entData.frames) + sec('превью', entData.previews);
+}
+
+// ---------------------------------------------------------------- тексты
+async function loadText(p, id, pathId) { const t = await api('/api/text?p=' + encodeURIComponent(p)); v2(id, t.text); if (pathId) v2(pathId, t.path); }
+async function saveText(pathId, textId) { await api('/api/text', { p: v(pathId), text: $(textId).value }); flash('сохранено ' + v(pathId)); }
+function loadPrompt() { loadText('pipeline/prompts/' + v('c_prompt'), 'c_prompttext', 'c_promptpath'); }
+function loadBatch() { loadText('pipeline/batch/' + v('b_ent') + '/gen.txt', 'b_text', 'b_path'); }
+
+// ---------------------------------------------------------------- пакет: чек-лист исключений
+let batchExcluded = new Set();
+function renderBatchChecklist() {
+  $('b_checklist').innerHTML = S.batch.map(e => {
+    const off = batchExcluded.has(e);
+    return `<label class="${off ? 'off' : ''}"><input type="checkbox" ${off ? '' : 'checked'} onchange="toggleBatchEntity('${esc(e)}', this.checked)">${esc(e)}</label>`;
+  }).join('');
+  $('b_summary').textContent = `выбрано ${S.batch.length - batchExcluded.size} из ${S.batch.length}`;
+}
+function toggleBatchEntity(name, on) {
+  if (on) batchExcluded.delete(name); else batchExcluded.add(name);
+  renderBatchChecklist();
+}
+function batchSelectAll(on) { batchExcluded = on ? new Set() : new Set(S.batch); renderBatchChecklist(); }
+function batchOnlyThis() { batchExcluded = new Set(S.batch.filter(e => e !== v('b_ent'))); renderBatchChecklist(); }
+function batchArgs() {
+  const only = batchExcluded.size ? S.batch.filter(e => !batchExcluded.has(e)).join(',') : '';
+  return { only, backend: v('b_backend'), 'dry-run': chk('b_dry'), 'keep-going': chk('b_keep') };
+}
+function flash(msg) { $('jobsSummary').textContent = msg; setTimeout(pollJobs, 1500); }
+
+// ---------------------------------------------------------------- задачи
+async function run(cmd, args) {
+  const j = await api('/api/run', { cmd, args });
+  $('footer').classList.remove('min');
+  selectJob(j.id);
+}
+let polling = false;
+async function pollJobs() {
+  if (polling) return;  // два параллельных опроса дублировали строки лога
+  polling = true;
+  try { await pollJobsInner(); } finally { polling = false; }
+}
+async function pollJobsInner() {
+  const jobs = await api('/api/jobs');
+  const running = jobs.filter(j => j.status === 'running').length, queued = jobs.filter(j => j.status === 'queued').length;
+  $('jobsSummary').textContent = running ? `выполняется ${running}, в очереди ${queued}` : (queued ? `в очереди ${queued}` : 'простой');
+  $('jobs').innerHTML = jobs.slice().reverse().map(j => `<div class="job ${j.status} ${j.id === curJob ? 'active' : ''}" onclick="selectJob(${j.id})"><span class="st"></span><span style="flex:1">#${j.id} ${esc(j.title)}</span><span style="color:var(--dim)">${j.status}</span></div>`).join('');
+  if (curJob != null) {
+    const j = await api(`/api/job?id=${curJob}&from=${logFrom}`);
+    if (j.log.length) { const pre = $('log'); if (logFrom === 0) pre.textContent = ''; pre.textContent += (pre.textContent ? '\n' : '') + j.log.join('\n'); logFrom += j.log.length; pre.scrollTop = pre.scrollHeight; }
+    $('cancelBtn').style.display = (j.status === 'running' || j.status === 'queued') ? '' : 'none';
+    if (j.status !== 'running' && j.status !== 'queued' && !doneSeen.has(j.id)) {
+      doneSeen.add(j.id);
+      if (curEnt) loadEntity(curEnt);  // подхватить новые raw/превью
+      if ($('tab-files').classList.contains('active')) renderFiles();
+      if ($('tab-pack').classList.contains('active')) renderPack();  // card.png / кадры / тайлсет после approve, post, pack
+      if (S) loadState();
+    }
+  }
+  clearTimeout(pollTimer);
+  pollTimer = setTimeout(pollJobs, (running || queued) ? 1000 : 5000);
+}
+function selectJob(id) { curJob = id; logFrom = 0; $('log').textContent = ''; clearTimeout(pollTimer); pollJobs(); }
+async function cancelJob() { if (curJob != null) await api('/api/cancel', { id: curJob }); pollJobs(); }
+
+// ---------------------------------------------------------------- старт
+loadState().then(() => { renderRefs(); pollJobs(); });
+</script>
+</body>
+</html>

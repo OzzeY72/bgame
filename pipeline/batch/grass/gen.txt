@@ -1,0 +1,2 @@
+# pipeline/batch/grass/gen.txt — tile: --name подставится из имени папки
+tile --subject "short mowed lawn grass, deep saturated green with lighter green blade highlights and tiny darker green shadow speckles" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

@@ -1,0 +1,2 @@
+# pipeline/batch/wall_top/gen.txt — facade: --name подставится из имени папки
+facade --subject "the same light beige stucco apartment building wall panel as a plain wall, but with an extra horizontal grey concrete cornice/ledge strip running along the very top edge of the tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

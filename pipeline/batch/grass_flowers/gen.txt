@@ -1,0 +1,2 @@
+# pipeline/batch/grass_flowers/gen.txt — tile: газон с мелкими цветочками (символ *), вариант grass — должен стыковаться с grass/grass2
+tile --subject "short mowed lawn grass, deep saturated green with lighter blade highlights, dotted with a handful of tiny scattered wildflowers (white daisies and yellow buttercups) as small 2-3 pixel specks, evenly spread across the tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

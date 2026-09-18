@@ -1,0 +1,2 @@
+# pipeline/batch/floor_tile/gen.txt — tile: --name подставится из имени папки
+tile --subject "pale cream ceramic floor tiles, square tile grid seams, subtle glossy highlight, clean shop interior flooring" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

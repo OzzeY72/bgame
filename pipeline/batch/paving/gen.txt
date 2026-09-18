@@ -1,0 +1,2 @@
+# pipeline/batch/paving/gen.txt — tile: тротуарная плитка (символ P), вариант тротуара рядом с pavement/pavement2
+tile --subject "interlocking sidewalk paving stones, small rectangular concrete pavers laid in a regular brick/herringbone pattern, muted grey with a slight pink-beige tint, thin darker seams between the pavers, even grid across the whole tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

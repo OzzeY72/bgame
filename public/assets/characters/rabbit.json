@@ -1,0 +1,30 @@
+{
+  "frameWidth": 96,
+  "frameHeight": 96,
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "walkFrames": 4,
+  "idleFrame": 1,
+  "idleRows": true,
+  "missing": [
+    "down_0",
+    "down_2",
+    "down_3",
+    "left_0",
+    "left_2",
+    "left_3",
+    "right_0",
+    "right_2",
+    "right_3",
+    "up_0",
+    "up_2",
+    "up_3",
+    "idle_left:* (стоит на кадре 1)",
+    "idle_right:* (стоит на кадре 1)",
+    "idle_up:* (стоит на кадре 1)"
+  ]
+}

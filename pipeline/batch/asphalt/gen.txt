@@ -1,0 +1,2 @@
+# pipeline/batch/asphalt/gen.txt — tile: --name подставится из имени папки
+tile --subject "worn dark grey asphalt road surface, subtle darker patches and tiny pebble texture, no cracks, no lines" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

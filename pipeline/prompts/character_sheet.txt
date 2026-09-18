@@ -1,0 +1,4 @@
+Create a pixel art character sheet of this exact character (image 1): the same character standing in 4 views arranged in ONE horizontal row of 4 equal cells, left to right: (1) facing the viewer / front, (2) facing left / left profile, (3) facing right / right profile, (4) facing away / back view. Same height, same proportions, same colors, same outfit and hairstyle in every cell. Feet on the same baseline in all cells. Each cell must contain the whole character with margin; nothing crosses cell borders. No borders or lines between cells.
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}, no shadows, no gradients. The character must NOT contain any {key} colors.
+{extra}
+Style: {style}.

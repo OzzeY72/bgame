@@ -1,0 +1,2 @@
+# pipeline/batch/roof/gen.txt — tile: --name подставится из имени папки
+tile --subject "a small shop roof surface, dark red corrugated metal roofing texture, subtle ridged panel lines" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

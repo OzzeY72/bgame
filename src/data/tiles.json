@@ -1,0 +1,248 @@
+{
+  "_comment": "Порядок = индекс в tileset.png (слева направо, по строкам, 8 тайлов в ряд). Единый источник для игры и pipeline (tiles.py pack). solid=true — непроходимый. color — цвет заглушки. top=<name> — тайл, который автоматически кладётся в слой overhead на строку выше (кроны деревьев).",
+  "columns": 8,
+  "tiles": [
+    {
+      "name": "empty",
+      "solid": false,
+      "color": "#000000"
+    },
+    {
+      "name": "grass",
+      "solid": false,
+      "color": "#5f9e4a"
+    },
+    {
+      "name": "grass2",
+      "solid": false,
+      "color": "#57933f"
+    },
+    {
+      "name": "dirt",
+      "solid": false,
+      "color": "#8a6a3f"
+    },
+    {
+      "name": "asphalt",
+      "solid": false,
+      "color": "#4a4a52"
+    },
+    {
+      "name": "asphalt_line",
+      "solid": false,
+      "color": "#5a5a62"
+    },
+    {
+      "name": "pavement",
+      "solid": false,
+      "color": "#9a9088"
+    },
+    {
+      "name": "pavement2",
+      "solid": false,
+      "color": "#8f857c"
+    },
+    {
+      "name": "curb",
+      "solid": false,
+      "color": "#c9c2b6"
+    },
+    {
+      "name": "curb_up",
+      "solid": false,
+      "color": "#c9c2b6"
+    },
+    {
+      "name": "floor_wood",
+      "solid": false,
+      "color": "#a67c52"
+    },
+    {
+      "name": "floor_tile",
+      "solid": false,
+      "color": "#c8c0b0"
+    },
+    {
+      "name": "carpet",
+      "solid": false,
+      "color": "#8b3a3a"
+    },
+    {
+      "name": "wall",
+      "solid": true,
+      "color": "#6b6b75"
+    },
+    {
+      "name": "wall_top",
+      "solid": true,
+      "color": "#55555f"
+    },
+    {
+      "name": "wall_inner",
+      "solid": true,
+      "color": "#c9b79c"
+    },
+    {
+      "name": "window",
+      "solid": true,
+      "color": "#7fb3d5"
+    },
+    {
+      "name": "door",
+      "solid": true,
+      "color": "#5a3a1e"
+    },
+    {
+      "name": "door_open",
+      "solid": false,
+      "color": "#3a2a14"
+    },
+    {
+      "name": "door_open_r",
+      "solid": false,
+      "color": "#3a2a14"
+    },
+    {
+      "name": "tree_trunk",
+      "solid": true,
+      "color": "#5a3a1e",
+      "top": "tree_top"
+    },
+    {
+      "name": "tree_top",
+      "solid": false,
+      "color": "#2f6b2a"
+    },
+    {
+      "name": "bush",
+      "solid": true,
+      "color": "#3f7a33"
+    },
+    {
+      "name": "flowers",
+      "solid": false,
+      "color": "#c95c8a"
+    },
+    {
+      "name": "fence",
+      "solid": true,
+      "color": "#8c7a5a"
+    },
+    {
+      "name": "lamp",
+      "solid": false,
+      "color": "#2a2a30",
+      "top": "lamp_top"
+    },
+    {
+      "name": "bench",
+      "solid": true,
+      "color": "#7a5a3a"
+    },
+    {
+      "name": "counter",
+      "solid": true,
+      "color": "#7a4a2a"
+    },
+    {
+      "name": "shelf",
+      "solid": true,
+      "color": "#5a4a3a"
+    },
+    {
+      "name": "sign_post",
+      "solid": true,
+      "color": "#d84b3a"
+    },
+    {
+      "name": "entrance",
+      "solid": true,
+      "color": "#3a2a3a"
+    },
+    {
+      "name": "entrance_r",
+      "solid": true,
+      "color": "#3a2a3a"
+    },
+    {
+      "name": "canopy",
+      "solid": false,
+      "color": "#4a3a4a"
+    },
+    {
+      "name": "roof",
+      "solid": true,
+      "color": "#7a3a3a"
+    },
+    {
+      "name": "box",
+      "solid": true,
+      "color": "#b58a55"
+    },
+    {
+      "name": "sewer_floor",
+      "solid": false,
+      "color": "#4a5a58"
+    },
+    {
+      "name": "sewer_wall",
+      "solid": true,
+      "color": "#2e3d3e"
+    },
+    {
+      "name": "water",
+      "solid": true,
+      "color": "#1f3f4a"
+    },
+    {
+      "name": "ladder",
+      "solid": false,
+      "color": "#8c7a5a"
+    },
+    {
+      "name": "bench_r",
+      "solid": true,
+      "color": "#7a5a3a"
+    },
+    {
+      "name": "lamp_top",
+      "solid": false,
+      "color": "#e8c860"
+    },
+    {
+      "name": "sign_post_r",
+      "solid": true,
+      "color": "#c0322a"
+    },
+    {
+      "name": "entrance_r",
+      "solid": true,
+      "color": "#3a2a3a"
+    },
+    {
+      "name": "wall_dark",
+      "solid": true,
+      "color": "#15121b"
+    },
+    {
+      "name": "paving",
+      "solid": false,
+      "color": "#a89a90"
+    },
+    {
+      "name": "grass_flowers",
+      "solid": false,
+      "color": "#62a04c"
+    },
+    {
+      "name": "flowers2",
+      "solid": false,
+      "color": "#d9c65a"
+    },
+    {
+      "name": "bush2",
+      "solid": true,
+      "color": "#356b2e"
+    }
+  ]
+}

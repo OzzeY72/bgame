@@ -1,0 +1,3 @@
+# pipeline/batch/curb_up/gen.txt — tile: бордюр между тротуаром (выше) и дорогой (ниже): ступенька вниз к камере,
+# видна тёмная вертикальная грань у нижнего края. (Альтернатива без генерации — вертикально отзеркалить curb.png.)
+tile --subject "a concrete curb/kerb strip seen slightly from the front: the flat light grey top surface of the curb fills the upper two thirds of the tile, and along the entire bottom edge runs a darker grey vertical face of the curb step where the sidewalk drops down to the road, one straight horizontal edge line between them" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

@@ -1,0 +1,2 @@
+# pipeline/batch/wall/gen.txt — facade: --name подставится из имени папки
+facade --subject "a light beige stucco Soviet panelka apartment building wall panel, one faint horizontal concrete seam line near the top, warm sun-lit shading" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

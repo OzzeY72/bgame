@@ -1,0 +1,3 @@
+A seamless tileable pixel art ground texture of {subject}, viewed straight from above (top-down, orthographic drone/satellite shot), evenly lit, no perspective, no horizon, no objects, no vignette, no borders, no drop shadow. The texture fills the ENTIRE square canvas edge-to-edge like a cropped photo of a continuous surface — it is NOT an icon, NOT a floating tile or chip, and NOT an isometric cube or 3D block sitting on a background; there is no background, the whole frame is the material itself. The texture must tile without visible seams: uniform density across the full frame, no large distinct shapes near the edges, no darkening in the corners. Limited palette (4-6 tones), subtle noise-like detail, no gradients.
+{extra}
+Style: {style}.

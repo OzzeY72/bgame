@@ -1,0 +1,4 @@
+Strictly preserve the composition, silhouette and outline of image 1. Reskin image 1 as {subject} in the exact pixel art style of image 2 (same palette approach, same outline weight, same shading).
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}.
+{extra}
+Style: {style}.

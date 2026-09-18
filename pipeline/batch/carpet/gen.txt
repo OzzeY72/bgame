@@ -1,0 +1,2 @@
+# pipeline/batch/carpet/gen.txt — tile: --name подставится из имени папки
+tile --subject "a deep red patterned area rug/carpet texture, simple ornamental border pattern, cozy indoor carpet" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

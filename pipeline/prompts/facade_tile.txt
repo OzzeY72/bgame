@@ -1,0 +1,3 @@
+A single pixel art architecture texture tile for an RPG game building: {subject}. Flat orthographic front elevation, camera perpendicular to the surface — like a texture swatch cut out of a wall, NOT a 3D isometric view, NOT a cube or box, no side wall, no roof, no perspective distortion, no depth, no floor in front of it. This is one repeating 32x32 unit of a larger wall built from a tile grid: it must align seamlessly with identical tiles placed directly beside it (matching any trim, mortar or panel lines at the tile edges), filling the entire square frame edge-to-edge. No background color, no vignette, no drop shadow, no outline around the whole tile.
+{extra}
+Style: {style}.

@@ -1,0 +1,2 @@
+# pipeline/batch/wall_inner/gen.txt — facade: --name подставится из имени папки
+facade --subject "a plain warm cream-colored interior room plaster wall, a thin darker wooden baseboard strip along the very bottom edge, clean small-shop interior" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

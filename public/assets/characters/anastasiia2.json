@@ -1,0 +1,23 @@
+{
+  "frameWidth": 48,
+  "frameHeight": 96,
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "walkFrames": 4,
+  "idleFrame": 1,
+  "missing": [
+    "left_0",
+    "left_2",
+    "left_3",
+    "right_0",
+    "right_2",
+    "right_3",
+    "up_0",
+    "up_2",
+    "up_3"
+  ]
+}

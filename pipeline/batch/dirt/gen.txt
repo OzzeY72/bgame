@@ -1,0 +1,2 @@
+# pipeline/batch/dirt/gen.txt — tile: --name подставится из имени папки
+tile --subject "packed brown dirt path, warm mid-brown with darker pebble specks and a couple of small cracks" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

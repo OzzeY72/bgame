@@ -1,0 +1,4 @@
+Turn the object from the reference photo into a small pixel art game item sprite: {subject}. Keep its recognizable shape, proportions, colors and key details, simplified for a tiny 32x32 sprite: few large readable shapes, no tiny details. CAMERA: front view from slightly above, as an item lying on the floor of a 2D top-down RPG (Stardew Valley) — the front faces the viewer, a narrow strip of the top is visible, horizontal edges stay horizontal; NOT isometric, NOT rotated 45 degrees, no visible side faces. Single object, centered, occupying about 85% of the image, no hands, no people, no other objects, no cast shadow, no pedestal or ground plane.
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}, no shadows, no gradients. The object must NOT contain any {key} colors.
+{extra}
+Style: {style}.

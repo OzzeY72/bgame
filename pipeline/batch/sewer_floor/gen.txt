@@ -1,0 +1,2 @@
+# pipeline/batch/sewer_floor/gen.txt — tile: пол канализации (символ g), заливает почти всю локацию
+tile --subject "damp dark grey-green stone sewer floor, old worn concrete slabs with faint seams, a few small shallow puddle highlights and dark grime in the joints, muted cold palette" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

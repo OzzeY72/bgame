@@ -1,0 +1,39 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "bgame/girl_ref.png"
+    },
+    "_meta": {
+      "title": "Ref 1"
+    }
+  },
+  "2": {
+    "class_type": "GeminiImage2Node",
+    "inputs": {
+      "prompt": "pixel art walk cycle",
+      "model": "gemini-3-pro-image-preview",
+      "seed": 0,
+      "aspect_ratio": "1:1",
+      "resolution": "1K",
+      "response_modalities": "IMAGE",
+      "images": [
+        "1",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Nano Banana"
+    }
+  },
+  "3": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "2",
+        0
+      ],
+      "filename_prefix": "bgame/nano"
+    }
+  }
+}

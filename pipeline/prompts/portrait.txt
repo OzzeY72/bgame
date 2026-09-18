@@ -1,0 +1,4 @@
+Create a pixel art dialogue portrait of this exact character (image 1): head and shoulders, facing the viewer (slight 3/4 turn is fine), expression: {emotion}. Square composition, the face is large and readable, centered, occupying most of the image. Same hairstyle, hair color, eye color, skin tone and outfit as the reference. Clean 1px outlines, flat cel shading, limited palette, in the style of Stardew Valley / Undertale dialogue portraits.
+BACKGROUND: solid flat uniform {key} color, EXACTLY hex {key_hex}, no gradients, no shadows. The character must NOT contain any {key} colors.
+{extra}
+Style: {style}.

@@ -1,0 +1,2 @@
+# pipeline/batch/asphalt_line/gen.txt — tile: --name подставится из имени папки
+tile --subject "worn dark grey asphalt road surface with a single straight dashed white lane-marking line running horizontally across the middle of the tile" --n 2 --negative "isometric, voxel, cube, box, diorama, vignette, drop shadow, border, floating tile, single centered object, icon, 3d render, blurry, photo, text, watermark, gradient background"

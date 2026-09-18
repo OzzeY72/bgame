@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>Маленькая игра</title>
+    <style>
+      /* Пиксельный шрифт подключается из кода (BootScene), если есть public/assets/fonts/pixel.ttf. */
+      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
+      /* Пастельный фон в тон панели диалога; игра — «экран» в рамке (#frame двигает main.ts). */
+      body {
+        background: #f6e4e6;
+        background-image:
+          radial-gradient(#f0cfd6 1.5px, transparent 1.6px),
+          radial-gradient(#f0cfd6 1.5px, transparent 1.6px);
+        background-size: 28px 28px;
+        background-position: 0 0, 14px 14px;
+      }
+      #game { position: relative; width: 100vw; height: 100vh; } /* центрирует канвас сам Phaser (autoCenter) */
+      canvas { position: relative; z-index: 1; image-rendering: pixelated; image-rendering: crisp-edges; }
+      #frame {
+        position: absolute; z-index: 0; visibility: hidden; pointer-events: none;
+        box-sizing: border-box;
+        background: #fbe4e6;
+        border: 3px solid #6b3a45;
+        border-radius: 10px;
+        box-shadow:
+          inset 0 0 0 4px #fff4f4,
+          inset 0 0 0 6px #f4c9d2,
+          0 0 0 3px #fbe4e6,
+          0 14px 32px rgba(107, 58, 69, 0.28);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game"><div id="frame"></div></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
