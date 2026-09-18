@@ -279,6 +279,7 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
       { say: 'monster', text: 'Стой. Рааасширение территории.' },
       { say: 'monster', text: 'Одалеешь меня в музыкальной битве, Саске, будет коробка твоей. Дабтебає' },
       { say: 'anastasiia', text: 'Чел, мне похуй' },
+      { sfx: 'pohui'},
       { camera: { follow: 'player' } },
       { minigame: 'rhythm' },
       { branch: {
