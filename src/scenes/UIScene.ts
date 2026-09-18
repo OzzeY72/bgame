@@ -3,7 +3,7 @@ import type { DialogueLine } from '../types';
 import { DIALOGUE, DIALOGUE_PANEL, GAME_WIDTH, GAME_HEIGHT, PORTRAIT_SIZE } from '../config';
 import { setupCamera, TEXT_RESOLUTION } from '../core/Render';
 import { bus } from '../core/EventBus';
-import { CHARACTERS } from '../data/characters';
+import { CHARACTERS, PLAYER_ID } from '../data/characters';
 import { audio } from '../core/Audio';
 import { gameState } from '../core/GameState';
 import { isInputLocked, lockInput, unlockInput } from '../core/InputLock';
@@ -166,7 +166,7 @@ export class UIScene extends Phaser.Scene {
     this.clearChoices();
 
     const think = !!line.think || !line.who;
-    const ch = line.who ? CHARACTERS[line.who] : undefined;
+    const ch = line.who ? CHARACTERS[line.who] : (think ? CHARACTERS[PLAYER_ID] : undefined);
     const P = DIALOGUE_PANEL;
 
     if (think) {
