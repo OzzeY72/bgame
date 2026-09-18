@@ -95,8 +95,10 @@ class AudioSystem {
         if (loopSec > 0 && snd.duration > loopSec + 0.1) {
           // volume: 0 — иначе Phaser берёт для маркера громкость по умолчанию (1) и звук на кадр включается на 100%
           snd.addMarker({ name: 'loop', start: 0, duration: loopSec, config: { loop: true, volume: 0 } });
-          snd.play('loop', { delay: lead });
-        } else snd.play({ delay: lead });
+          snd.play('loop', { delay: lead, volume: 0 });
+        } else snd.play({ delay: lead, volume: 0 });
+        // Phaser может сбросить volume при play() — принудительно 0 перед fade-in tween'ом
+        snd.setVolume(0);
         // плавное появление через встроенный volume (Phaser ставит громкость мгновенно — используем твин)
         const scene = this.anyScene();
         if (scene && ms > 0) scene.tweens.add({ targets: snd, volume: vol, duration: ms });
