@@ -55,4 +55,5 @@ export const post_outside: MapDef = {
   onEnter: ['finale'],
   outdoor: true,
   leaves: true,
+  ambient: ['bird-ambience', 'wind'],
 };

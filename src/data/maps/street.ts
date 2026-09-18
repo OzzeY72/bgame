@@ -65,4 +65,5 @@ export const street: MapDef = {
   ],
   outdoor: true,
   leaves: true,
+  ambient: ['bird-ambience', 'wind', 'cicadas'],
 };

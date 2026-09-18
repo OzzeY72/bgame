@@ -62,4 +62,5 @@ export const yard: MapDef = {
   onEnter: ['intro'],
   outdoor: true,
   leaves: true,
+  ambient: ['bird-ambience', 'wind'],
 };
