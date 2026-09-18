@@ -78,8 +78,8 @@ export function meGiftLines(state: GameState, item: string): DialogueLine[] {
   if (item === DRAWN_ITEM) {
     const name = (state.drawn?.name ?? 'рисунок').toLowerCase();
     return [
-      { who: 'me', text: `${capitalize(name)}... Это ты сама нарисовала, а я только упаковал.` },
-      { who: 'me', text: 'По-моему, лучший подарок из всех. Хотя я, конечно, необъективен.' },
+      { who: 'me', text: `${capitalize(name)}... Мда чел, ну и фигню ты нарисовала` },
+      { who: 'me', text: 'По-моему, хучший подарок из всех. Хотя я, конечно, необъективен.' },
     ];
   }
   return ME_GIFT_LINES[item] ?? [{ who: 'me', text: 'Про этот подарок я ничего не придумал. Но он от души.' }];
