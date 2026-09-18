@@ -53,7 +53,7 @@ export const street: MapDef = {
     { x: 25, y: 4, w: 1, h: 6, to: 'post_outside', spawn: 'fromStreet' },
   ],
   npcs: [
-    { id: 'me', sprite: 'me', x: 11, y: 13, dir: 'up', dialogue: 'me_street', if: ['packed:camera_gift', '!gifts_opened'] },
+    { id: 'me', sprite: 'me', x: 11, y: 13, dir: 'up', dialogue: 'me_street', if: ['!gifts_opened'] },
   ],
   items: [
     { id: 'easel', sprite: 'prop_easel', x: 20, y: 12, cutscene: 'easel_draw' },
