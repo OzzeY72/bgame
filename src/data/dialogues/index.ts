@@ -41,6 +41,7 @@ export const HANDMADE_DIALOGUES: Record<string, Dialogue> = {
       { who: 'anastasiia', text: 'На моё имя? От кого?' },
       { who: 'rabbit', text: 'Отправитель просил не говорить. Но он очень старался.' },
       { who: 'rabbit', text: 'Соберите все — и приносите сюда. Открывать лучше вместе.' },
+      { who: 'rabbit', text: 'Кстати, не забудьте покормить Фрею' },
     ];
   },
 
