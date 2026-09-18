@@ -33,8 +33,8 @@ export const SFX_NAMES = [
 /** для большинства эффектов файл .ogg; здесь — исключения с другим расширением */
 const SFX_EXT: Partial<Record<(typeof SFX_NAMES)[number], string>> = { drip: 'mp3' };
 
-/** сколько файлов голоса проверяется на персонажа: assets/voice/<clips>_1.ogg … _<VOICE_CLIPS>.ogg (лишних может не быть) */
-export const VOICE_CLIPS = 8;
+/** сколько файлов голоса на каждого персонажа: assets/voice/<clips>_1.ogg … _<N>.ogg */
+export const VOICE_CLIP_COUNTS: Record<string, number> = { anastasiia: 4, me: 3 };
 
 /** ключ загруженного клипа голоса */
 export const voiceKey = (clips: string, n: number): string => `voice_${clips}_${n}`;
@@ -88,7 +88,8 @@ export const ASSETS: AssetDef[] = [
   // --- голоса персонажей в диалоге (нет файлов — блип) ---
   ...Object.values(CHARACTERS)
     .filter((c) => c.voice)
-    .flatMap((c) =>
-      Array.from({ length: VOICE_CLIPS }, (_, i): AssetDef => ({ key: voiceKey(c.voice!.clips, i + 1), type: 'audio', url: `assets/voice/${c.voice!.clips}_${i + 1}.ogg` })),
-    ),
+    .flatMap((c) => {
+      const count = VOICE_CLIP_COUNTS[c.voice!.clips] ?? 4;
+      return Array.from({ length: count }, (_, i): AssetDef => ({ key: voiceKey(c.voice!.clips, i + 1), type: 'audio', url: `assets/voice/${c.voice!.clips}_${i + 1}.ogg` }));
+    }),
 ];

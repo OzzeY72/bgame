@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { AUDIO } from '../config';
 import { getMusic, type MusicDef } from '../data/music';
-import { VOICE_CLIPS, voiceKey } from '../data/assets';
+import { VOICE_CLIP_COUNTS, voiceKey } from '../data/assets';
 import { ThemePlayer, playSynthSfx } from './Synth';
 import { bus } from './EventBus';
 
@@ -204,7 +204,8 @@ class AudioSystem {
     if (!keys) {
       const cache = (this.manager as Phaser.Sound.WebAudioSoundManager).game.cache.audio;
       keys = [];
-      for (let n = 1; n <= VOICE_CLIPS; n++) if (cache.exists(voiceKey(clips, n))) keys.push(voiceKey(clips, n));
+      const max = VOICE_CLIP_COUNTS[clips] ?? 4;
+      for (let n = 1; n <= max; n++) if (cache.exists(voiceKey(clips, n))) keys.push(voiceKey(clips, n));
       this.voiceClips.set(clips, keys);
     }
     return keys;
