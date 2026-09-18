@@ -69,7 +69,7 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
               await p.walkToTile(side, p.tileY);
               await p.walkToTile(side, 6);
             }
-            await p.walkToTile(9, 7);
+            await p.walkToTile(8, 6);
             p.face('up');
           } },
           { sfx: 'open' },
