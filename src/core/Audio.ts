@@ -13,6 +13,8 @@ interface Current {
   startAt: number;
   sound?: Phaser.Sound.WebAudioSound;
   synth?: ThemePlayer;
+  /** до этого момента (performance.now) applyVolumes не трогает sound.volume — идёт fade-in */
+  fadeUntil?: number;
 }
 
 /**
@@ -101,16 +103,19 @@ class AudioSystem {
         snd.setVolume(0);
         // плавное появление через встроенный volume (Phaser ставит громкость мгновенно — используем твин)
         const scene = this.anyScene();
+        const fadeUntil = ms > 0 ? performance.now() + ms + 50 : 0;
         if (scene && ms > 0) scene.tweens.add({ targets: snd, volume: vol, duration: ms });
         else snd.setVolume(vol);
-        this.current = { key, def, bpm, startAt: ctx.currentTime + lead, sound: snd };
+        this.current = { key, def, bpm, startAt: ctx.currentTime + lead, sound: snd, fadeUntil };
       } else if (def.theme) {
         const synth = new ThemePlayer(ctx, this.musicGain!, def.theme, {
           bpm,
           leadBeats: opts.leadBeats ?? 0,
           transpose: def.transpose,
-          gain: def.volume ?? 1,
+          gain: 0, // стартуем с нуля — fade-in ниже
         });
+        // плавное появление синтеза — без этого при смене темы удар по ушам
+        synth.setGain(def.volume ?? 1, ms > 0 ? ms : 0);
         this.current = { key, def, bpm, startAt: ctx.currentTime + 0.08 + lead, synth };
       } else {
         console.warn(`[audio] у музыки "${key}" нет ни файла, ни темы`);
@@ -226,7 +231,10 @@ class AudioSystem {
     if (this.musicGain) this.musicGain.gain.value = this.volumes.music * m;
     if (this.sfxGain) this.sfxGain.gain.value = this.volumes.sfx * m;
     const c = this.current;
-    if (c?.sound) c.sound.setVolume((c.def.volume ?? 1) * this.volumes.music * m);
+    // Не трогаем sound.volume пока идёт fade-in tween — иначе громкость прыгает на 100%
+    if (c?.sound && !(c.fadeUntil && performance.now() < c.fadeUntil)) {
+      c.sound.setVolume((c.def.volume ?? 1) * this.volumes.music * m);
+    }
   }
 
   private loadSettings(): void {
