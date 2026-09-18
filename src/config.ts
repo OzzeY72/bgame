@@ -68,7 +68,7 @@ export const IDLE_FRAME_RATE = 3;       // кадров/сек дыхания (4
 export const API_URL: string = (import.meta.env.VITE_API_URL as string | undefined) ?? '';
 
 /** Звук: громкости по умолчанию (0..1); сохраняются в localStorage под `key` (сменить ключ = сбросить всем сохранённые). Меняются в настройках (Esc). */
-export const AUDIO = { music: 0.2, sfx: 0.2, step: 0.1, key: 'bgame.audio.v2' };
+export const AUDIO = { music: 0.2, sfx: 1.0, step: 0.1, key: 'bgame.audio.v2' };
 
 /** Ритм-игра (канализация). Окна попадания — секунды от идеального момента. */
 export const RHYTHM = {
