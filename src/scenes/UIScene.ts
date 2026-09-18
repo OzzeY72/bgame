@@ -473,7 +473,7 @@ export class UIScene extends Phaser.Scene {
       .setDepth(81)
       .setAlpha(0);
     const hint = this.add
-      .text(cx, GAME_HEIGHT - 12, '[нажми, чтобы продолжить]', { fontFamily: DIALOGUE.fontFamily, fontSize: '8px', color: '#ffffffaa', resolution: TEXT_RESOLUTION })
+      .text(cx, GAME_HEIGHT - 12, '[ESC — закрыть]', { fontFamily: DIALOGUE.fontFamily, fontSize: '8px', color: '#ffffffaa', resolution: TEXT_RESOLUTION })
       .setOrigin(0.5, 1)
       .setDepth(81)
       .setAlpha(0);
@@ -481,10 +481,10 @@ export class UIScene extends Phaser.Scene {
 
     this.tweens.add({ targets: group, alpha: 1, duration: 400 });
     const readyAt = this.time.now + 400;
-    const onDismiss = () => {
+    const onDismiss = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
       if (this.time.now < readyAt) return;
       this.input.keyboard!.off('keydown', onDismiss);
-      this.input.off('pointerdown', onDismiss);
       this.tweens.add({
         targets: group,
         alpha: 0,
@@ -494,7 +494,6 @@ export class UIScene extends Phaser.Scene {
       bus.emit('reveal:closed');
     };
     this.input.keyboard!.on('keydown', onDismiss);
-    this.input.on('pointerdown', onDismiss);
   }
 
   private showToast(title: string): void {
