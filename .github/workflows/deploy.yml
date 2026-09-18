@@ -34,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Write pipeline secrets
+        run: |
+          echo "WEBHOOK_URL=${{ secrets.WEBHOOK_URL }}" >> pipeline/.env
+          echo "WEBHOOK_FORMAT=${{ secrets.WEBHOOK_FORMAT }}" >> pipeline/.env
+
       - name: Build
         run: npx vite build
 
