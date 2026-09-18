@@ -1,11 +1,11 @@
 import Phaser from 'phaser';
-import { MinigameScene, hudStyle, type MinigameData } from './MinigameScene';
-import { Tentacle } from './Tentacle';
-import { GAME_HEIGHT, GAME_WIDTH, RHYTHM, WALK_FRAMES, IDLE_FRAME, DIR_ROWS } from '../config';
+import { DIR_ROWS, GAME_HEIGHT, GAME_WIDTH, IDLE_FRAME, RHYTHM, WALK_FRAMES } from '../config';
 import { audio } from '../core/Audio';
-import { getMusic } from '../data/music';
 import type { ThemeJson } from '../core/Synth';
 import { CHARACTERS, PLAYER_ID } from '../data/characters';
+import { getMusic } from '../data/music';
+import { MinigameScene, hudStyle, type MinigameData } from './MinigameScene';
+import { Tentacle } from './Tentacle';
 
 const MUSIC_KEY = 'sewer';
 const LANE_COLORS = [0xc24bd6, 0x43b5e6, 0x5fd66a, 0xf25a5a]; // как в FNF: left, down, up, right
@@ -562,20 +562,27 @@ export class RhythmScene extends MinigameScene {
     if (this.over) return;
     this.over = true;
     audio.stopMusic(800);
-    this.say('Ладно... ты лучше.', 3000);
-    this.tentacles.forEach((t) => t.setCurl(1));
-    this.tweens.add({ targets: this.body, y: this.body.y + 60, alpha: 0, duration: 1500, delay: 600 });
-    this.tweens.add({ targets: this.tentacles.map((t) => t.g), alpha: 0, duration: 1200, delay: 900 });
     const total = this.notes.length + this.targetsSpawned;
     const hits = total - this.counts.miss;
     const acc = total ? Math.round((hits / total) * 100) : 100;
-    const r = await this.endScreen(true, 'Победа!', [
-      `Очки: ${this.score}`,
+    const won = this.score >= RHYTHM.targetScore;
+    if (won) {
+      this.say('На этот раз ты одалел меня, Саске. Но кто знает что будет в будущем.', 3000);
+      this.tentacles.forEach((t) => t.setCurl(1));
+      this.tweens.add({ targets: this.body, y: this.body.y + 60, alpha: 0, duration: 1500, delay: 600 });
+      this.tweens.add({ targets: this.tentacles.map((t) => t.g), alpha: 0, duration: 1200, delay: 900 });
+    } else {
+      this.say('Бро, тебе надо больше тренироваться', 2500);
+      this.tentacles.forEach((t) => t.kick(1));
+    }
+    const title = won ? 'Победа!' : 'Мало очков!';
+    const r = await this.endScreen(won, title, [
+      `Очки: ${this.score} (нужно ${RHYTHM.targetScore})`,
       `Точность: ${acc}%   Макс. комбо: ${this.maxCombo}`,
       `Идеально ${this.counts.perfect} · Хорошо ${this.counts.good} · Так себе ${this.counts.ok} · Мимо ${this.counts.miss}`,
     ]);
-    void r;
-    this.finish({ won: true, score: this.score });
+    if (!won && r === 'retry') this.scene.restart({ id: this.mgId });
+    else this.finish({ won, score: this.score });
   }
 
   private async lose(quit: boolean): Promise<void> {
