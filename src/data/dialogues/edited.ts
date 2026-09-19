@@ -7,7 +7,7 @@ import type { DialogueLine } from '../../types';
 export const EDITED_DIALOGUES: Record<string, DialogueLine[]> = {
   item_camera: [
     { think: true, text: 'Коробка с фотоаппаратом. Canon, тот самый' },
-    { think: true, text: 'Только нахуя?' },
+    { think: true, text: 'Только зачем?' },
     { who: 'anastasiia', text: 'Мдаааа чел, ну ты как всегда...', portrait: 'anastasiia_angry' },
   ],
   item_vinyl: [

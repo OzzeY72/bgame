@@ -55,7 +55,7 @@ export function totalGifts(): number {
 /** Комментарии автора (me) к каждому подарку при открытии на почте. Нарисованный — по названию из GameState.drawn. */
 const ME_GIFT_LINES: Record<string, DialogueLine[]> = {
   camera: [
-    { who: 'me', text: 'Плёночный. Я знаю, ты хотела именно такой...' },
+    { who: 'me', text: 'Плёночный. Я знаю, ты хотела именно НЕ такой...' },
     { who: 'me', text: 'Первый кадр - на меня, пожалуйста. Я потренировался стоять красиво.' },
   ],
   vinyl: [
@@ -78,7 +78,7 @@ export function meGiftLines(state: GameState, item: string): DialogueLine[] {
     const name = (state.drawn?.name ?? 'рисунок').toLowerCase();
     return [
       { who: 'me', text: `${capitalize(name)}... Мда чел, ну и фигню ты нарисовала` },
-      { who: 'me', text: 'По-моему, хучший подарок из всех. Хотя я, конечно, необъективен.' },
+      { who: 'me', text: 'По-моему, лучший подарок из всех. Хотя я, конечно, необъективен.' },
     ];
   }
   return ME_GIFT_LINES[item] ?? [{ who: 'me', text: 'Про этот подарок я ничего не придумал. Но он от души.' }];

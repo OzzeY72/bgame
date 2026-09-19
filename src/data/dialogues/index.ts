@@ -75,7 +75,7 @@ export const HANDMADE_DIALOGUES: Record<string, Dialogue> = {
 
   item_macbook: [
     { think: true, text: 'Ноутбук. Теперь-то валорант лагать не будет' },
-    { think: true, text: 'Только вот Riot дауны не адаптировали античит, прийдётся в косынку на нём играть' },
+    { think: true, text: 'Только вот Riot не адаптировали античит, прийдётся в косынку на нём играть' },
     { who: 'anastasiia', text: 'Это лучший НЕ настоящий подарок за сегодня!!' },
   ],
 
