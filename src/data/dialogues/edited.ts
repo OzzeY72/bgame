@@ -18,7 +18,7 @@ export const EDITED_DIALOGUES: Record<string, DialogueLine[]> = {
   me_street: [
     { who: 'me', text: '...' },
     { who: 'me', text: 'Ты меня не видела. Я тут случайно.' },
-    { text: 'Ёбнутый какой-то', who: 'anastasiia' },
+    { text: 'Странно...', who: 'anastasiia' },
   ],
   item_headphones: [
     { think: true, text: 'Наушники. Крутые ' },
