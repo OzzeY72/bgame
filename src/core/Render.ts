@@ -12,12 +12,11 @@ export function setupCamera(scene: Phaser.Scene): Phaser.Cameras.Scene2D.Camera 
 /** Текстовые объекты рисуют свой canvas с этим разрешением — на экране получаются 1:1 к пикселям канваса. */
 export const TEXT_RESOLUTION = RENDER_SCALE;
 
-/** Проверка: запущена ли игра на мобильном устройстве или устройстве с сенсорным экраном. */
+/** Проверка: запущена ли игра на мобильном устройстве (телефон/планшет). Десктопы с тачпадом НЕ считаются. */
 export function isMobileDevice(): boolean {
   if (typeof window === 'undefined') return false;
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
   const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  return hasTouch || isMobileUA;
+  return isMobileUA;
 }
 
 /** Поле вокруг игры под декоративную рамку (#frame в index.html), CSS px. На мобильных = 0. */

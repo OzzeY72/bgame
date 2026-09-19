@@ -94,13 +94,15 @@ export class UIScene extends Phaser.Scene {
     this.prompt = this.add
       .text(GAME_WIDTH - 8, GAME_HEIGHT - 8, '', { fontFamily, fontSize: '10px', color: '#ffffff', backgroundColor: '#000000aa', padding: { x: 4, y: 2 }, resolution })
       .setOrigin(1, 1)
-      .setVisible(false)
-      .setInteractive({ useHandCursor: true });
+      .setVisible(false);
 
-    this.prompt.on('pointerdown', (p: Phaser.Input.Pointer) => {
-      p.event.stopPropagation();
-      GameInput.triggerTouchAction();
-    });
+    if (isMobileDevice()) {
+      this.prompt.setInteractive({ useHandCursor: true });
+      this.prompt.on('pointerdown', (p: Phaser.Input.Pointer) => {
+        p.event.stopPropagation();
+        GameInput.triggerTouchAction();
+      });
+    }
 
     this.toast = this.add
       .text(8, 8, '', { fontFamily, fontSize: '12px', color: '#ffffff', backgroundColor: '#000000aa', padding: { x: 6, y: 3 }, resolution })
@@ -125,10 +127,12 @@ export class UIScene extends Phaser.Scene {
     };
     // клик/тап тоже листает
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      // Игнорируем нажатия на элементы управления
-      if (pointer.x < 110 && pointer.y > GAME_HEIGHT - 110) return;
-      if (pointer.x > GAME_WIDTH - 80 && pointer.y > GAME_HEIGHT - 80) return;
-      if (pointer.y < 30) return;
+      if (isMobileDevice()) {
+        // На мобильных игнорируем нажатия на элементы управления
+        if (pointer.x < 110 && pointer.y > GAME_HEIGHT - 110) return;
+        if (pointer.x > GAME_WIDTH - 80 && pointer.y > GAME_HEIGHT - 80) return;
+        if (pointer.y < 30) return;
+      }
 
       if (this.time.now > this.ignoreUntil) this.onAction();
     });
@@ -149,15 +153,17 @@ export class UIScene extends Phaser.Scene {
       this.setRefresh?.();
     });
 
-    this.setupTouchControls();
+    if (isMobileDevice()) {
+      this.setupTouchControls();
+    }
   }
 
   override update(): void {
     const J = Phaser.Input.Keyboard.JustDown;
     const esc = !!this.invKeys[1] && J(this.invKeys[1]);
 
-    // скрывать вирт. контроллеры во время открытия панелей инвентаря/настроек
-    if (this.touchGroup) {
+    // скрывать вирт. контроллеры во время открытия панелей инвентаря/настроек (только мобильные)
+    if (isMobileDevice() && this.touchGroup) {
       const modalOpen = this.setPanel.visible || this.invPanel.visible;
       this.touchGroup.setVisible(!modalOpen);
     }
@@ -256,15 +262,17 @@ export class UIScene extends Phaser.Scene {
     let y = this.bodyText.y + this.bodyText.height + 4;
     this.line!.choices!.forEach((c, i) => {
       const t = this.add.text(x, y, `  ${c.label}`, { fontFamily, fontSize: `${fontSize}px`, color: DIALOGUE_PANEL.inkDim, resolution: TEXT_RESOLUTION });
-      t.setInteractive({ useHandCursor: true });
-      t.on('pointerdown', (p: Phaser.Input.Pointer) => {
-        p.event.stopPropagation();
-        this.choiceIndex = i;
-        this.updateChoiceCursor();
-        if (this.time.now > this.ignoreUntil) {
-          this.onAction();
-        }
-      });
+      if (isMobileDevice()) {
+        t.setInteractive({ useHandCursor: true });
+        t.on('pointerdown', (p: Phaser.Input.Pointer) => {
+          p.event.stopPropagation();
+          this.choiceIndex = i;
+          this.updateChoiceCursor();
+          if (this.time.now > this.ignoreUntil) {
+            this.onAction();
+          }
+        });
+      }
       this.choiceTexts.push(t);
       y += t.height + 2;
     });
