@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+﻿import Phaser from 'phaser';
 import type { DialogueLine } from '../types';
 import { DIALOGUE, DIALOGUE_PANEL, GAME_WIDTH, GAME_HEIGHT, PORTRAIT_SIZE } from '../config';
 import { setupCamera, TEXT_RESOLUTION, isMobileDevice } from '../core/Render';
@@ -651,11 +651,11 @@ export class UIScene extends Phaser.Scene {
     this.touchGroup.add(menuBtn);
 
     // ── Кнопка полноэкранного режима справа вверху ───────────────────────────
-    const fsBg = this.add.rectangle(GAME_WIDTH - 8, 8, 28, 16, 0x000000, 0.6)
+    const fsBg = this.add.rectangle(GAME_WIDTH - 8, 8, 34, 18, 0x000000, 0.6)
       .setOrigin(1, 0).setStrokeStyle(1, 0xffffff, 0.4);
-    const fsTxt = this.add.text(GAME_WIDTH - 22, 16, '⛶', {
+    const fsTxt = this.add.text(GAME_WIDTH - 25, 17, '[ ]', {
       fontFamily: DIALOGUE.fontFamily,
-      fontSize: '10px',
+      fontSize: '9px',
       color: '#ffffff',
       resolution: TEXT_RESOLUTION,
     }).setOrigin(0.5, 0.5);
@@ -664,10 +664,12 @@ export class UIScene extends Phaser.Scene {
     fsBg.setInteractive({ useHandCursor: true });
     fsBg.on('pointerdown', (p: Phaser.Input.Pointer) => {
       p.event.stopPropagation();
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {/* ignore */});
+      if (this.scale.isFullscreen) {
+        this.scale.stopFullscreen();
+        fsTxt.setText('[ ]');
       } else {
-        document.exitFullscreen().catch(() => {/* ignore */});
+        this.scale.startFullscreen();
+        fsTxt.setText('[X]');
       }
     });
 
