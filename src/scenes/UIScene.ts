@@ -40,7 +40,6 @@ export class UIScene extends Phaser.Scene {
 
   /** Сенсорное управление для мобильных устройств */
   private touchGroup!: Phaser.GameObjects.Container;
-  private joystickPointerId: number | null = null;
 
   private line: DialogueLine | null = null;
   private fullText = '';
@@ -542,45 +541,65 @@ export class UIScene extends Phaser.Scene {
     this.tweens.add({ targets: this.toast, alpha: 1, duration: 300, yoyo: true, hold: 1500 });
   }
 
-  /** Создание элементов сенсорного управления (виртуальный джойстик, кнопки взаимодействия и меню). */
+  /** Создание элементов сенсорного управления (крестовина D-pad, кнопка E, меню, полноэкранный режим). */
   private setupTouchControls(): void {
     this.touchGroup = this.add.container(0, 0).setDepth(200);
 
-    const baseX = 52;
-    const baseY = GAME_HEIGHT - 52;
-    const maxRadius = 26;
+    // ── D-PAD (крестовина) слева внизу ──────────────────────────────────────
+    const padCX = 52;
+    const padCY = GAME_HEIGHT - 52;
+    const btnSize = 20; // полуширина кнопки (квадрат 40×40)
+    const gap = 22;     // смещение от центра до кнопки
 
-    const baseCircle = this.add.circle(baseX, baseY, 32, 0x000000, 0.35).setStrokeStyle(2, 0xffffff, 0.5);
-    const knobCircle = this.add.circle(baseX, baseY, 13, 0xffffff, 0.75);
+    /** Одна кнопка крестовины */
+    const makeDpadBtn = (
+      ox: number, oy: number,
+      label: string,
+      ax: number, ay: number,
+    ) => {
+      const x = padCX + ox * gap;
+      const y = padCY + oy * gap;
 
-    this.touchGroup.add([baseCircle, knobCircle]);
+      const bg = this.add.rectangle(x, y, btnSize * 2, btnSize * 2, 0x000000, 0.45)
+        .setStrokeStyle(1.5, 0xffffff, 0.55);
+      const txt = this.add.text(x, y, label, {
+        fontFamily: DIALOGUE.fontFamily,
+        fontSize: '12px',
+        color: '#ffffff',
+        resolution: TEXT_RESOLUTION,
+      }).setOrigin(0.5);
 
-    const updateJoystick = (pointer: Phaser.Input.Pointer) => {
-      const dx = pointer.x - baseX;
-      const dy = pointer.y - baseY;
-      const dist = Math.hypot(dx, dy);
+      bg.setInteractive({ useHandCursor: true });
 
-      if (dist === 0) {
-        knobCircle.setPosition(baseX, baseY);
+      const press = (p: Phaser.Input.Pointer) => {
+        p.event.stopPropagation();
+        bg.setAlpha(0.85);
+        GameInput.setTouchAxis(ax, ay);
+      };
+      const release = () => {
+        bg.setAlpha(1);
         GameInput.setTouchAxis(0, 0);
-        return;
-      }
+      };
 
-      const clampedDist = Math.min(dist, maxRadius);
-      const nx = dx / dist;
-      const ny = dy / dist;
+      bg.on('pointerdown', press);
+      bg.on('pointerup', release);
+      bg.on('pointerout', release);
+      bg.on('pointerupoutside', release);
 
-      knobCircle.setPosition(baseX + nx * clampedDist, baseY + ny * clampedDist);
-      GameInput.setTouchAxis((nx * clampedDist) / maxRadius, (ny * clampedDist) / maxRadius);
+      this.touchGroup.add([bg, txt]);
     };
 
-    const resetJoystick = () => {
-      this.joystickPointerId = null;
-      knobCircle.setPosition(baseX, baseY);
-      GameInput.setTouchAxis(0, 0);
-    };
+    makeDpadBtn( 0, -1, '▲', 0, -1);
+    makeDpadBtn( 0,  1, '▼', 0,  1);
+    makeDpadBtn(-1,  0, '◀', -1, 0);
+    makeDpadBtn( 1,  0, '▶',  1, 0);
 
-    // Кнопка действия (E) справа внизу
+    // центральная декоративная точка
+    const centerDot = this.add.circle(padCX, padCY, 8, 0x000000, 0.35)
+      .setStrokeStyle(1, 0xffffff, 0.3);
+    this.touchGroup.add(centerDot);
+
+    // ── Кнопка действия (E) справа внизу ────────────────────────────────────
     const actX = GAME_WIDTH - 42;
     const actY = GAME_HEIGHT - 42;
 
@@ -603,14 +622,14 @@ export class UIScene extends Phaser.Scene {
         this.onAction();
       }
     });
-
     actCircle.on('pointerup', () => actCircle.setScale(1));
     actCircle.on('pointerout', () => actCircle.setScale(1));
 
     this.touchGroup.add(actBtn);
 
-    // Кнопка меню слева вверху (для мобильных)
-    const menuBg = this.add.rectangle(8, 8, 44, 16, 0x000000, 0.6).setOrigin(0, 0).setStrokeStyle(1, 0xffffff, 0.4);
+    // ── Кнопка меню слева вверху ─────────────────────────────────────────────
+    const menuBg = this.add.rectangle(8, 8, 44, 16, 0x000000, 0.6)
+      .setOrigin(0, 0).setStrokeStyle(1, 0xffffff, 0.4);
     const menuTxt = this.add.text(30, 16, 'МЕНЮ', {
       fontFamily: DIALOGUE.fontFamily,
       fontSize: '8px',
@@ -631,27 +650,27 @@ export class UIScene extends Phaser.Scene {
 
     this.touchGroup.add(menuBtn);
 
-    // Обработка касаний джойстика
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-      // Игнорируем верхнюю треть экрана и клики по другим кнопкам
-      if (pointer.x < GAME_WIDTH * 0.45 && pointer.y > GAME_HEIGHT * 0.4) {
-        this.joystickPointerId = pointer.id;
-        updateJoystick(pointer);
+    // ── Кнопка полноэкранного режима справа вверху ───────────────────────────
+    const fsBg = this.add.rectangle(GAME_WIDTH - 8, 8, 28, 16, 0x000000, 0.6)
+      .setOrigin(1, 0).setStrokeStyle(1, 0xffffff, 0.4);
+    const fsTxt = this.add.text(GAME_WIDTH - 22, 16, '⛶', {
+      fontFamily: DIALOGUE.fontFamily,
+      fontSize: '10px',
+      color: '#ffffff',
+      resolution: TEXT_RESOLUTION,
+    }).setOrigin(0.5, 0.5);
+
+    const fsBtn = this.add.container(0, 0, [fsBg, fsTxt]);
+    fsBg.setInteractive({ useHandCursor: true });
+    fsBg.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      p.event.stopPropagation();
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {/* ignore */});
+      } else {
+        document.exitFullscreen().catch(() => {/* ignore */});
       }
     });
 
-    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
-      if (this.joystickPointerId === pointer.id && pointer.isDown) {
-        updateJoystick(pointer);
-      }
-    });
-
-    const onPointerUp = (pointer: Phaser.Input.Pointer) => {
-      if (this.joystickPointerId === pointer.id) {
-        resetJoystick();
-      }
-    };
-    this.input.on('pointerup', onPointerUp);
-    this.input.on('pointerupoutside', onPointerUp);
+    this.touchGroup.add(fsBtn);
   }
 }
