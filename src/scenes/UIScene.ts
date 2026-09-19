@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import type { DialogueLine } from '../types';
 import { DIALOGUE, DIALOGUE_PANEL, GAME_WIDTH, GAME_HEIGHT, PORTRAIT_SIZE } from '../config';
-import { setupCamera, TEXT_RESOLUTION } from '../core/Render';
+import { setupCamera, TEXT_RESOLUTION, isMobileDevice } from '../core/Render';
 import { bus } from '../core/EventBus';
 import { CHARACTERS, PLAYER_ID } from '../data/characters';
 import { audio } from '../core/Audio';
@@ -9,6 +9,7 @@ import { gameState } from '../core/GameState';
 import { isInputLocked, lockInput, unlockInput } from '../core/InputLock';
 import { AUDIO } from '../config';
 import { itemName, itemTexture, totalGifts } from '../data/gifts';
+import { GameInput } from '../core/Input';
 
 /**
  * Оверлей поверх мира: панель диалога (текст с "печатью", справа портрет и плашка имени), варианты
@@ -36,6 +37,10 @@ export class UIScene extends Phaser.Scene {
   private setRow = 0;
   private setKeys: Record<'left' | 'right' | 'up' | 'down', Phaser.Input.Keyboard.Key[]> = { left: [], right: [], up: [], down: [] };
   private setRefresh: (() => void) | null = null;
+
+  /** Сенсорное управление для мобильных устройств */
+  private touchGroup!: Phaser.GameObjects.Container;
+  private joystickPointerId: number | null = null;
 
   private line: DialogueLine | null = null;
   private fullText = '';
@@ -89,7 +94,13 @@ export class UIScene extends Phaser.Scene {
     this.prompt = this.add
       .text(GAME_WIDTH - 8, GAME_HEIGHT - 8, '', { fontFamily, fontSize: '10px', color: '#ffffff', backgroundColor: '#000000aa', padding: { x: 4, y: 2 }, resolution })
       .setOrigin(1, 1)
-      .setVisible(false);
+      .setVisible(false)
+      .setInteractive({ useHandCursor: true });
+
+    this.prompt.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      p.event.stopPropagation();
+      GameInput.triggerTouchAction();
+    });
 
     this.toast = this.add
       .text(8, 8, '', { fontFamily, fontSize: '12px', color: '#ffffff', backgroundColor: '#000000aa', padding: { x: 6, y: 3 }, resolution })
@@ -113,7 +124,12 @@ export class UIScene extends Phaser.Scene {
       down: this.downKeys,
     };
     // клик/тап тоже листает
-    this.input.on('pointerdown', () => {
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      // Игнорируем нажатия на элементы управления
+      if (pointer.x < 110 && pointer.y > GAME_HEIGHT - 110) return;
+      if (pointer.x > GAME_WIDTH - 80 && pointer.y > GAME_HEIGHT - 80) return;
+      if (pointer.y < 30) return;
+
       if (this.time.now > this.ignoreUntil) this.onAction();
     });
 
@@ -132,11 +148,19 @@ export class UIScene extends Phaser.Scene {
       this.showToast(audio.toggleMute() ? 'Звук выключен' : 'Звук включён');
       this.setRefresh?.();
     });
+
+    this.setupTouchControls();
   }
 
   override update(): void {
     const J = Phaser.Input.Keyboard.JustDown;
     const esc = !!this.invKeys[1] && J(this.invKeys[1]);
+
+    // скрывать вирт. контроллеры во время открытия панелей инвентаря/настроек
+    if (this.touchGroup) {
+      const modalOpen = this.setPanel.visible || this.invPanel.visible;
+      this.touchGroup.setVisible(!modalOpen);
+    }
     // настройки открыты — только они и реагируют (ввод мира заблокирован)
     if (this.setPanel.visible) {
       if (esc) this.toggleSettings();
@@ -232,6 +256,15 @@ export class UIScene extends Phaser.Scene {
     let y = this.bodyText.y + this.bodyText.height + 4;
     this.line!.choices!.forEach((c, i) => {
       const t = this.add.text(x, y, `  ${c.label}`, { fontFamily, fontSize: `${fontSize}px`, color: DIALOGUE_PANEL.inkDim, resolution: TEXT_RESOLUTION });
+      t.setInteractive({ useHandCursor: true });
+      t.on('pointerdown', (p: Phaser.Input.Pointer) => {
+        p.event.stopPropagation();
+        this.choiceIndex = i;
+        this.updateChoiceCursor();
+        if (this.time.now > this.ignoreUntil) {
+          this.onAction();
+        }
+      });
       this.choiceTexts.push(t);
       y += t.height + 2;
     });
@@ -499,5 +532,118 @@ export class UIScene extends Phaser.Scene {
   private showToast(title: string): void {
     this.toast.setText(title).setAlpha(0);
     this.tweens.add({ targets: this.toast, alpha: 1, duration: 300, yoyo: true, hold: 1500 });
+  }
+
+  /** Создание элементов сенсорного управления (виртуальный джойстик, кнопки взаимодействия и меню). */
+  private setupTouchControls(): void {
+    this.touchGroup = this.add.container(0, 0).setDepth(200);
+
+    const baseX = 52;
+    const baseY = GAME_HEIGHT - 52;
+    const maxRadius = 26;
+
+    const baseCircle = this.add.circle(baseX, baseY, 32, 0x000000, 0.35).setStrokeStyle(2, 0xffffff, 0.5);
+    const knobCircle = this.add.circle(baseX, baseY, 13, 0xffffff, 0.75);
+
+    this.touchGroup.add([baseCircle, knobCircle]);
+
+    const updateJoystick = (pointer: Phaser.Input.Pointer) => {
+      const dx = pointer.x - baseX;
+      const dy = pointer.y - baseY;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist === 0) {
+        knobCircle.setPosition(baseX, baseY);
+        GameInput.setTouchAxis(0, 0);
+        return;
+      }
+
+      const clampedDist = Math.min(dist, maxRadius);
+      const nx = dx / dist;
+      const ny = dy / dist;
+
+      knobCircle.setPosition(baseX + nx * clampedDist, baseY + ny * clampedDist);
+      GameInput.setTouchAxis((nx * clampedDist) / maxRadius, (ny * clampedDist) / maxRadius);
+    };
+
+    const resetJoystick = () => {
+      this.joystickPointerId = null;
+      knobCircle.setPosition(baseX, baseY);
+      GameInput.setTouchAxis(0, 0);
+    };
+
+    // Кнопка действия (E) справа внизу
+    const actX = GAME_WIDTH - 42;
+    const actY = GAME_HEIGHT - 42;
+
+    const actCircle = this.add.circle(0, 0, 22, 0x000000, 0.45).setStrokeStyle(2, 0xffffff, 0.7);
+    const actText = this.add.text(0, 0, 'E', {
+      fontFamily: DIALOGUE.fontFamily,
+      fontSize: '13px',
+      color: '#ffffff',
+      resolution: TEXT_RESOLUTION,
+    }).setOrigin(0.5);
+
+    const actBtn = this.add.container(actX, actY, [actCircle, actText]);
+    actCircle.setInteractive({ useHandCursor: true });
+
+    actCircle.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      p.event.stopPropagation();
+      actCircle.setScale(0.9);
+      GameInput.triggerTouchAction();
+      if (this.line && this.time.now > this.ignoreUntil) {
+        this.onAction();
+      }
+    });
+
+    actCircle.on('pointerup', () => actCircle.setScale(1));
+    actCircle.on('pointerout', () => actCircle.setScale(1));
+
+    this.touchGroup.add(actBtn);
+
+    // Кнопка меню слева вверху (для мобильных)
+    const menuBg = this.add.rectangle(8, 8, 44, 16, 0x000000, 0.6).setOrigin(0, 0).setStrokeStyle(1, 0xffffff, 0.4);
+    const menuTxt = this.add.text(30, 16, 'МЕНЮ', {
+      fontFamily: DIALOGUE.fontFamily,
+      fontSize: '8px',
+      color: '#ffffff',
+      resolution: TEXT_RESOLUTION,
+    }).setOrigin(0.5, 0.5);
+
+    const menuBtn = this.add.container(0, 0, [menuBg, menuTxt]);
+    menuBg.setInteractive({ useHandCursor: true });
+    menuBg.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      p.event.stopPropagation();
+      if (this.setPanel.visible) {
+        this.toggleSettings();
+      } else if (!this.line && !isInputLocked()) {
+        this.toggleSettings();
+      }
+    });
+
+    this.touchGroup.add(menuBtn);
+
+    // Обработка касаний джойстика
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      // Игнорируем верхнюю треть экрана и клики по другим кнопкам
+      if (pointer.x < GAME_WIDTH * 0.45 && pointer.y > GAME_HEIGHT * 0.4) {
+        this.joystickPointerId = pointer.id;
+        updateJoystick(pointer);
+      }
+    });
+
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.joystickPointerId === pointer.id && pointer.isDown) {
+        updateJoystick(pointer);
+      }
+    });
+
+    const onPointerUp = (pointer: Phaser.Input.Pointer) => {
+      if (this.joystickPointerId === pointer.id) {
+        resetJoystick();
+      }
+    };
+    this.input.on('pointerup', onPointerUp);
+    this.input.on('pointerupoutside', onPointerUp);
   }
 }

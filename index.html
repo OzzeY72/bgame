@@ -2,12 +2,26 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <title>Маленькая игра</title>
     <style>
       /* Пиксельный шрифт подключается из кода (BootScene), если есть public/assets/fonts/pixel.ttf. */
-      html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-      /* Пастельный фон в тон панели диалога; игра — «экран» в рамке (#frame двигает main.ts). */
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        height: 100dvh;
+        overflow: hidden;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+      /* Пастельный фон в тон панели диалога; на ПК — «экран» в рамке (#frame двигает main.ts). */
       body {
         background: #f6e4e6;
         background-image:
@@ -16,8 +30,31 @@
         background-size: 28px 28px;
         background-position: 0 0, 14px 14px;
       }
-      #game { position: relative; width: 100vw; height: 100vh; } /* центрирует канвас сам Phaser (autoCenter) */
-      canvas { position: relative; z-index: 1; image-rendering: pixelated; image-rendering: crisp-edges; }
+      /* Мобильный режим: сплошной темный фон без узоров и рамки */
+      body.is-mobile {
+        background: #0b0a10 !important;
+        background-image: none !important;
+      }
+      body.is-mobile #frame {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      #game {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      canvas {
+        position: relative;
+        z-index: 1;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        touch-action: none;
+      }
       #frame {
         position: absolute; z-index: 0; visibility: hidden; pointer-events: none;
         box-sizing: border-box;

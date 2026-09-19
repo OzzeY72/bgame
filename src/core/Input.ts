@@ -5,6 +5,9 @@ import Phaser from 'phaser';
  * Одна на сцену World. Блокируется на время катсцен/диалогов через `locked`.
  */
 export class GameInput {
+  static touchAxis = { x: 0, y: 0 };
+  static touchActionJustPressed = false;
+
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd: Record<'W' | 'A' | 'S' | 'D', Phaser.Input.Keyboard.Key>;
   private actionKeys: Phaser.Input.Keyboard.Key[];
@@ -22,6 +25,15 @@ export class GameInput {
     ];
   }
 
+  static setTouchAxis(x: number, y: number): void {
+    GameInput.touchAxis.x = x;
+    GameInput.touchAxis.y = y;
+  }
+
+  static triggerTouchAction(): void {
+    GameInput.touchActionJustPressed = true;
+  }
+
   /** Вектор движения (-1..1 по осям), нормализованный по диагонали. */
   axis(): { x: number; y: number } {
     if (this.locked) return { x: 0, y: 0 };
@@ -31,7 +43,11 @@ export class GameInput {
     if (this.cursors.right.isDown || this.wasd.D.isDown) x += 1;
     if (this.cursors.up.isDown || this.wasd.W.isDown) y -= 1;
     if (this.cursors.down.isDown || this.wasd.S.isDown) y += 1;
-    if (x !== 0 && y !== 0) {
+
+    if (x === 0 && y === 0) {
+      x = GameInput.touchAxis.x;
+      y = GameInput.touchAxis.y;
+    } else if (x !== 0 && y !== 0) {
       x *= Math.SQRT1_2;
       y *= Math.SQRT1_2;
     }
@@ -47,6 +63,10 @@ export class GameInput {
   anyActionJustPressed(): boolean {
     let pressed = false;
     for (const k of this.actionKeys) if (Phaser.Input.Keyboard.JustDown(k)) pressed = true;
+    if (GameInput.touchActionJustPressed) {
+      pressed = true;
+      GameInput.touchActionJustPressed = false;
+    }
     return pressed;
   }
 }

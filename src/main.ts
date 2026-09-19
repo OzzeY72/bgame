@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { GAME_WIDTH, GAME_HEIGHT, RENDER_SCALE } from './config';
-import { BEZEL, screenZoom } from './core/Render';
+import { getBezel, isMobileDevice, screenZoom } from './core/Render';
 import { BootScene } from './scenes/BootScene';
 import { PreloadScene } from './scenes/PreloadScene';
 import { WorldScene } from './scenes/WorldScene';
@@ -13,11 +13,8 @@ const debug = params.has('debug');
 
 /**
  * Точка входа. Игровое разрешение маленькое (512x288; канвас — в RENDER_SCALE раз крупнее, см. config.ts),
- * на экран выводится целым множителем игрового пикселя (по краям может остаться рамка) и без сглаживания —
- * так и получается "пиксельность".
- * ?debug — показать физические тела, ?new — начать игру заново, ?map=<key>&spawn=<name> — начать с локации,
- * ?cutscene=<id> — сыграть катсцену при входе, ?mg=<id> — сразу запустить мини-игру,
- * ?st — цикл на setTimeout вместо requestAnimationFrame (для автотестов в скрытой вкладке).
+ * на экран выводится целым множителем игрового пикселя (на ПК по краям рамка, на мобильных — на весь экран)
+ * и без сглаживания — так и получается "пиксельность".
  */
 const game = new Phaser.Game({
   type: Phaser.AUTO,
@@ -42,21 +39,33 @@ const game = new Phaser.Game({
   scene: [BootScene, PreloadScene, WorldScene, UIScene, ...MINIGAME_SCENES],
 });
 
-// Декоративная рамка вокруг канваса (index.html): двигаем вслед за ним.
+// Декоративная рамка вокруг канваса (index.html): двигаем вслед за ним на ПК.
 const frame = document.getElementById('frame');
 function placeFrame(): void {
   if (!frame) return;
+  const bezel = getBezel();
+  if (bezel === 0) {
+    frame.style.visibility = 'hidden';
+    frame.style.display = 'none';
+    return;
+  }
+  frame.style.display = 'block';
   const r = game.canvas.getBoundingClientRect();
   const p = game.canvas.parentElement!.getBoundingClientRect();
-  frame.style.left = `${r.left - p.left - BEZEL}px`;
-  frame.style.top = `${r.top - p.top - BEZEL}px`;
-  frame.style.width = `${r.width + BEZEL * 2}px`;
-  frame.style.height = `${r.height + BEZEL * 2}px`;
+  frame.style.left = `${r.left - p.left - bezel}px`;
+  frame.style.top = `${r.top - p.top - bezel}px`;
+  frame.style.width = `${r.width + bezel * 2}px`;
+  frame.style.height = `${r.height + bezel * 2}px`;
   frame.style.visibility = 'visible';
 }
 
 // при изменении окна (или DPR) пересчитываем множитель; ScaleManager сам следит за размером родителя
 function fit(): void {
+  if (isMobileDevice()) {
+    document.body.classList.add('is-mobile');
+  } else {
+    document.body.classList.remove('is-mobile');
+  }
   const { width, height } = game.scale.parentSize;
   const z = screenZoom(width, height);
   if (Math.abs(z - game.scale.zoom) > 1e-6) game.scale.setZoom(z);
@@ -64,6 +73,7 @@ function fit(): void {
 }
 game.scale.on('resize', fit);
 window.addEventListener('resize', () => game.scale.refresh());
+window.addEventListener('orientationchange', () => setTimeout(fit, 200));
 game.events.once('ready', fit);
 
 // для отладки из консоли браузера: __game.scene.getScene('World'), __gs — стейт (__gs.set('flag'), __gs.save())

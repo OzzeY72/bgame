@@ -12,7 +12,19 @@ export function setupCamera(scene: Phaser.Scene): Phaser.Cameras.Scene2D.Camera 
 /** Текстовые объекты рисуют свой canvas с этим разрешением — на экране получаются 1:1 к пикселям канваса. */
 export const TEXT_RESOLUTION = RENDER_SCALE;
 
-/** Поле вокруг игры под декоративную рамку (#frame в index.html), CSS px. */
+/** Проверка: запущена ли игра на мобильном устройстве или устройстве с сенсорным экраном. */
+export function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false;
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const isMobileUA = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  return hasTouch || isMobileUA;
+}
+
+/** Поле вокруг игры под декоративную рамку (#frame в index.html), CSS px. На мобильных = 0. */
+export function getBezel(): number {
+  return isMobileDevice() ? 0 : 18;
+}
+
 export const BEZEL = 18;
 
 /**
@@ -21,8 +33,16 @@ export const BEZEL = 18;
  * в CSS px оставлял бы игру маленькой). Возвращает zoom относительно канваса ×RENDER_SCALE.
  */
 export function screenZoom(parentW: number, parentH: number, dpr = window.devicePixelRatio || 1): number {
-  const w = (parentW - BEZEL * 2) * dpr;
-  const h = (parentH - BEZEL * 2) * dpr;
+  const bezel = getBezel();
+  const w = Math.max(1, (parentW - bezel * 2) * dpr);
+  const h = Math.max(1, (parentH - bezel * 2) * dpr);
+
+  if (bezel === 0) {
+    // На мобильном — плавная подгонка на весь экран (без рамок)
+    const scaleFactor = Math.min(w / GAME_WIDTH, h / GAME_HEIGHT);
+    return Math.max(0.1, scaleFactor / dpr / RENDER_SCALE);
+  }
+
   const perGamePixel = Math.max(1, Math.floor(Math.min(w / GAME_WIDTH, h / GAME_HEIGHT)));
   return perGamePixel / dpr / RENDER_SCALE;
 }
