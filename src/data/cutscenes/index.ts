@@ -85,7 +85,7 @@ export const HANDMADE_CUTSCENES: Record<string, Cutscene> = {
           { say: 'anastasiia', text: 'Что в коробках?' },
           { say: 'me', text: 'Чел...' },
           { say: 'me', text: 'Нииизнаю', portrait: 'me_dontknow' },
-          { say: 'me', text: 'Открывать буду по одной, буду комментировать, иначе не выдержу из-за СДВГ.' },
+          { say: 'me', text: 'Открывать буду по одной, буду комментировать, иначе не выдежу' },
           { call: async (ctx) => {
             const fillers = ['Дальше.', 'Следующая.', 'Так, теперь эта.', 'Ещё одна.'];
             let k = 0;

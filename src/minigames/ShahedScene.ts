@@ -1,8 +1,8 @@
 import Phaser from 'phaser';
-import { MinigameScene, hudStyle, type MinigameData } from './MinigameScene';
-import { GAME_HEIGHT, GAME_WIDTH, SHAHED, WALK_FRAMES, IDLE_FRAME, DIR_ROWS } from '../config';
+import { DIR_ROWS, GAME_HEIGHT, GAME_WIDTH, IDLE_FRAME, SHAHED, WALK_FRAMES } from '../config';
 import { audio } from '../core/Audio';
 import { CHARACTERS, PLAYER_ID } from '../data/characters';
+import { MinigameScene, hudStyle, type MinigameData } from './MinigameScene';
 
 const MUSIC_KEY = 'sky';
 const LAUNCHER = { x: 250, y: 242 }; // пусковая на крыше, отсюда летят ракеты
@@ -146,7 +146,7 @@ export class ShahedScene extends MinigameScene {
 
     audio.playMusic(MUSIC_KEY, { restart: true, ms: 0 });
     audio.sfx('alert');
-    void this.banner(`Ракеты — по тёмным дронам. Зелёные — наши! Ракет: ${SHAHED.ammo}`, 2400, 11);
+    void this.banner(`Ракеты — по дронам. Зелёные — свои! Ракет: ${SHAHED.ammo}`, 2400, 11);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.input.setDefaultCursor('default'));
   }

@@ -83,7 +83,7 @@ export const EDITED_CUTSCENES: Record<string, Cutscene> = {
         then: [
           { think: 'Люк. Приоткрыт. И оттуда... музыка?' },
           { actor: 'player', emote: '?' },
-          { think: 'Ну, раз день особенный полезу на помойку.' },
+          { think: 'Ну, раз день особенный полезу туда.' },
           { setFlag: 'sewer_visited' },
         ],
         else: [
