@@ -1,4 +1,4 @@
-﻿import Phaser from 'phaser';
+import Phaser from 'phaser';
 import type { DialogueLine } from '../types';
 import { DIALOGUE, DIALOGUE_PANEL, GAME_WIDTH, GAME_HEIGHT, PORTRAIT_SIZE } from '../config';
 import { setupCamera, TEXT_RESOLUTION, isMobileDevice } from '../core/Render';
@@ -546,10 +546,10 @@ export class UIScene extends Phaser.Scene {
     this.touchGroup = this.add.container(0, 0).setDepth(200);
 
     // ── D-PAD (крестовина) слева внизу ──────────────────────────────────────
-    const padCX = 52;
-    const padCY = GAME_HEIGHT - 52;
-    const btnSize = 20; // полуширина кнопки (квадрат 40×40)
-    const gap = 22;     // смещение от центра до кнопки
+    const padCX = 50;
+    const padCY = GAME_HEIGHT - 50;
+    const btnSize = 12; // полуширина кнопки (квадрат 24×24)
+    const gap = 26;     // смещение от центра до кнопки
 
     /** Одна кнопка крестовины */
     const makeDpadBtn = (
@@ -582,6 +582,9 @@ export class UIScene extends Phaser.Scene {
       };
 
       bg.on('pointerdown', press);
+      bg.on('pointerover', (p: Phaser.Input.Pointer) => {
+        if (p.isDown) press(p);
+      });
       bg.on('pointerup', release);
       bg.on('pointerout', release);
       bg.on('pointerupoutside', release);
@@ -595,7 +598,7 @@ export class UIScene extends Phaser.Scene {
     makeDpadBtn( 1,  0, '▶',  1, 0);
 
     // центральная декоративная точка
-    const centerDot = this.add.circle(padCX, padCY, 8, 0x000000, 0.35)
+    const centerDot = this.add.circle(padCX, padCY, 6, 0x000000, 0.35)
       .setStrokeStyle(1, 0xffffff, 0.3);
     this.touchGroup.add(centerDot);
 
@@ -662,17 +665,63 @@ export class UIScene extends Phaser.Scene {
 
     const fsBtn = this.add.container(0, 0, [fsBg, fsTxt]);
     fsBg.setInteractive({ useHandCursor: true });
+
+    const isFsActive = (): boolean => {
+      const doc = document as unknown as { fullscreenElement?: Element; webkitFullscreenElement?: Element; mozFullScreenElement?: Element; msFullscreenElement?: Element };
+      return !!(doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement || this.scale.isFullscreen);
+    };
+
+    const updateFsLabel = () => {
+      fsTxt.setText(isFsActive() ? '[X]' : '[ ]');
+    };
+
+    const toggleFs = () => {
+      const doc = document as unknown as { exitFullscreen?: () => Promise<void>; webkitExitFullscreen?: () => Promise<void>; mozCancelFullScreen?: () => Promise<void>; msExitFullscreen?: () => Promise<void> };
+      const el = document.documentElement as unknown as { requestFullscreen?: () => Promise<void>; webkitRequestFullscreen?: () => Promise<void>; mozRequestFullScreen?: () => Promise<void>; msRequestFullscreen?: () => Promise<void> };
+
+      if (!isFsActive()) {
+        const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+        if (req) {
+          req.call(el).then(updateFsLabel).catch(() => {
+            try { this.scale.startFullscreen(); } catch {}
+            updateFsLabel();
+          });
+        } else {
+          try { this.scale.startFullscreen(); } catch {}
+          updateFsLabel();
+        }
+      } else {
+        const exit = doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
+        if (exit) {
+          exit.call(doc).then(updateFsLabel).catch(() => {
+            try { this.scale.stopFullscreen(); } catch {}
+            updateFsLabel();
+          });
+        } else {
+          try { this.scale.stopFullscreen(); } catch {}
+          updateFsLabel();
+        }
+      }
+    };
+
     fsBg.on('pointerdown', (p: Phaser.Input.Pointer) => {
       p.event.stopPropagation();
-      if (this.scale.isFullscreen) {
-        this.scale.stopFullscreen();
-        fsTxt.setText('[ ]');
-      } else {
-        this.scale.startFullscreen();
-        fsTxt.setText('[X]');
-      }
+      toggleFs();
+    });
+
+    const onFsChange = () => {
+      updateFsLabel();
+      this.scale.refresh();
+    };
+
+    document.addEventListener('fullscreenchange', onFsChange);
+    document.addEventListener('webkitfullscreenchange', onFsChange);
+    this.events.once('shutdown', () => {
+      document.removeEventListener('fullscreenchange', onFsChange);
+      document.removeEventListener('webkitfullscreenchange', onFsChange);
     });
 
     this.touchGroup.add(fsBtn);
   }
 }
+
